@@ -27,6 +27,15 @@ class DataAnalyzer(object):
         if export2xls == True:
             self.df.to_csv(path , index=True, header=True)
         return self.df
+    
+    def csv2df(self,csvpath, dataname = "csv_data",export2xls = True):
+        csv_df = pd.read_csv(csvpath)
+        self.df = csv_df[self.datformat]
+        self.df = self.df.reset_index(drop=True)
+        path = self.exportpath + dataname + ".csv"
+        if export2xls == True:
+            self.df.to_csv(path , index=True, header=True)
+        return self.df
 
     def df2Barmin(self, inputdf, barmins,crossmin = 1,export2xls = True):
         dfbarmin = pd.DataFrame()
@@ -65,4 +74,4 @@ class DataAnalyzer(object):
 DA = DataAnalyzer()
 start = datetime(year=2017,month=7,day =1,hour=0, minute=0, second=0, microsecond=0)
 end = datetime.today()
-df = DA.db2df(db = "VnTrader_1Min_Db", collection = "rb0000",start = start, end =end)
+df = DA.csv2df("C:\\Project\\rb00002.csv","copy")
