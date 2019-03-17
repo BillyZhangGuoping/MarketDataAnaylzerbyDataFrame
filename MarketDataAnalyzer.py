@@ -17,7 +17,7 @@ class DataAnalyzer(object):
         self.exportpath = exportpath
         self.datformat = datformat
 
-    def db2df(self, db, collection, start, end, mongohost="localhost", mongoport=27017, export2xls=True):
+    def db2df(self, db, collection, start, end, mongohost="localhost", mongoport=27017, export2csv=True):
         """读取MongoDB数据库行情记录，输出到Dataframe中"""
         self.mongohost = mongohost
         self.mongoport = mongoport
@@ -31,11 +31,11 @@ class DataAnalyzer(object):
         self.df = self.df[self.datformat]
         self.df = self.df.reset_index(drop=True)
         path = self.exportpath + self.collection + ".csv"
-        if export2xls == True:
+        if export2csv == True:
             self.df.to_csv(path, index=True, header=True)
         return self.df
 
-    def csv2df(self, csvpath, dataname="csv_data", export2xls=True):
+    def csv2df(self, csvpath, dataname="csv_data", export2csv=True):
         """读取csv行情数据，输入到Dataframe中"""
         csv_df = pd.read_csv(csvpath)
         self.df = csv_df[self.datformat]
@@ -47,11 +47,11 @@ class DataAnalyzer(object):
         # self.df["volume"] = self.df['volume'].astype(int)
         self.df = self.df.reset_index(drop=True)
         path = self.exportpath + dataname + ".csv"
-        if export2xls == True:
+        if export2csv == True:
             self.df.to_csv(path, index=True, header=True)
         return self.df
 
-    def df2Barmin(self, inputdf, barmins, crossmin=1, export2xls=True):
+    def df2Barmin(self, inputdf, barmins, crossmin=1, export2csv=True):
         """输入分钟k线dataframe数据，合并多多种数据，例如三分钟/5分钟等，如果开始时间是9点1分，crossmin = 0；如果是9点1分，crossmin为1"""
         dfbarmin = pd.DataFrame()
         highBarMin = 0
@@ -85,11 +85,11 @@ class DataAnalyzer(object):
                 lowBarMin = 0
                 openBarMin = 0
                 volumeBarmin = 0
-        if export2xls == True:
+        if export2csv == True:
             dfbarmin.to_csv(self.exportpath + "bar" + str(barmins) + ".csv", index=True, header=True)
         return dfbarmin
 
-    def dfcci(self, inputdf, n, export2xls=True):
+    def dfcci(self, inputdf, n, export2csv=True):
         """调用talib方法计算CCI指标，写入到df并输出"""
         dfcci = inputdf
         dfcci["cci"] = None
@@ -100,7 +100,7 @@ class DataAnalyzer(object):
 
         dfcci = dfcci.fillna(0)
         dfcci = dfcci.replace(np.inf, 0)
-        if export2xls == True:
+        if export2csv == True:
             dfcci.to_csv(self.exportpath + "dfcci" + ".csv", index=True, header=True)
         return dfcci
 
@@ -131,6 +131,7 @@ if __name__ == '__main__':
     dfaftercci["next2BarClose"] = None
     dfaftercci["next4BarClose"] = None
     dfaftercci["next6BarClose"] = None
+    dfaftercci["next5BarCloseMakrup"] = None
     for i in range(1, len(dfaftercci)-6):
         if dfaftercci.loc[i,"close"] > dfaftercci.loc[i+2,"close"]:
             dfaftercci.loc[i,"next2BarClose"] = -1
@@ -138,35 +139,42 @@ if __name__ == '__main__':
             dfaftercci.loc[i, "next2BarClose"] =1
 
         if dfaftercci.loc[i,"close"] > dfaftercci.loc[i+4,"close"]:
-            dfaftercci[i,"next4BarClose"] = -1
+            dfaftercci.loc[i, "next4BarClose"] = -1
         else:
-            dfaftercci[i, "next4BarClose"] =1
+            dfaftercci.loc[i, "next4BarClose"] = 1
 
         if dfaftercci.loc[i,"close"] > dfaftercci.loc[i+6,"close"]:
-            dfaftercci[i,"next6BarClose"] = -1
+            dfaftercci.loc[i, "next6BarClose"] = -1
         else:
-            dfaftercci[i, "next6BarClose"] =1
+            dfaftercci.loc[i, "next6BarClose"] = 1
+        #######计算######################
+        dfaftercci.loc[i,"next5BarCloseMakrup"] = dfaftercci.loc[i+5,"close"] - dfaftercci.loc[i,"close"]
+    dfaftercci = dfaftercci.fillna(0)
+    plt.figure(figsize=(15, 3))
+    plt.scatter(dfaftercci["cci"], dfaftercci["next5BarCloseMakrup"])
+    plt.show()
 
     for cciValue in [100,200]:
         de_anaylsis = dfaftercci.loc[(dfaftercci["cci"]>= cciValue)& (dfaftercci["cci"]< cciValue + 100)]
         percebtage = de_anaylsis[de_anaylsis["next2BarClose"]>0]["next2BarClose"].count()*100.000/de_anaylsis['cci'].count()
-        print('在cci 区间(%s , %s) 时候，第二根K线结束价格上涨概率为 %s%%' %(cciValue,cciValue + 50,percebtage))
+        print('在cci 区间(%s , %s) 时候，第二根K线结束价格上涨概率为 %s%%' %(cciValue,cciValue + 100,percebtage))
 
         percebtage = de_anaylsis[de_anaylsis["next2BarClose"]<0]["next2BarClose"].count()*100.000/de_anaylsis['cci'].count()
-        print('在cci 区间-(%s , %s) 时候，第二根K线结束价格下跌概率为 %s%%' %(cciValue,cciValue + 50,percebtage))
+        print('在cci 区间-(%s , %s) 时候，第二根K线结束价格下跌概率为 %s%%' %(cciValue,cciValue + 100,percebtage))
 
         percebtage = de_anaylsis[de_anaylsis["next4BarClose"] > 0]["next2BarClose"].count() * 100.000 / de_anaylsis[
             'cci'].count()
-        print('在cci 区间(%s , %s) 时候，第四根K线结束价格上涨概率为 %s%%' % (cciValue, cciValue + 50, percebtage))
+        print('在cci 区间(%s , %s) 时候，第四根K线结束价格上涨概率为 %s%%' % (cciValue, cciValue + 100, percebtage))
 
         percebtage = de_anaylsis[de_anaylsis["next4BarClose"] < 0]["next2BarClose"].count() * 100.000 / de_anaylsis[
             'cci'].count()
-        print('在cci 区间-(%s , %s) 时候，第四根K线结束价格下跌概率为 %s%%' % (cciValue, cciValue + 50, percebtage))
+        print('在cci 区间-(%s , %s) 时候，第四根K线结束价格下跌概率为 %s%%' % (cciValue, cciValue + 100, percebtage))
 
         percebtage = de_anaylsis[de_anaylsis["next6BarClose"] > 0]["next2BarClose"].count() * 100.000 / de_anaylsis[
             'cci'].count()
-        print('在cci 区间(%s , %s) 时候，第六根K线结束价格上涨概率为 %s%%' % (cciValue, cciValue + 50, percebtage))
+        print('在cci 区间(%s , %s) 时候，第六根K线结束价格上涨概率为 %s%%' % (cciValue, cciValue + 100, percebtage))
 
         percebtage = de_anaylsis[de_anaylsis["next6BarClose"] < 0]["next2BarClose"].count() * 100.000 / de_anaylsis[
             'cci'].count()
-        print('在cci 区间-(%s , %s) 时候，第六根K线结束价格下跌概率为 %s%%' % (cciValue, cciValue + 50, percebtage))
+        print('在cci 区间-(%s , %s) 时候，第六根K线结束价格下跌概率为 %s%%' % (cciValue, cciValue + 100, percebtage))
+
