@@ -1,6 +1,6 @@
 # encoding: UTF-8
 import pandas as pd
-import numppy as np
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 
@@ -16,8 +16,8 @@ df = df.reset_index(drop=True)
 # plt.ylabel('Mid Price',fontsize=18)
 # plt.show()
 
-high_prices = df.loc[:,'high'].as_matrix()
-low_prices = df.loc[:,'low'].as_matrix()
+high_prices = df.loc[:,'high'].values
+low_prices = df.loc[:,'low'].values
 mid_prices = (high_prices+low_prices)/2.
 
 train_data = mid_prices[:55000]
@@ -25,7 +25,8 @@ test_data = mid_prices[55000:]
 
 scaler = MinMaxScaler()
 train_data = train_data.reshape(-1,1)
-print(train_data)
+test_data = test_data.reshape(-1,1)
+print(test_data)
 
 smoothing_window_size = 2500
 for di in range(0,50000,smoothing_window_size):
@@ -66,6 +67,6 @@ for pred_idx in range(1,N):
    running_mean = running_mean*decay + (1.0-decay)*train_data[pred_idx-1]
    run_avg_predictions.append(running_mean)
    mse_errors.append((run_avg_predictions[-1]-train_data[pred_idx])**2)
-   run_avg_x.append(date)
+   run_avg_x.append(pred_idx)
 
 print('MSE error for EMA averaging: %.5f'%(0.5*np.mean(mse_errors)))
