@@ -121,8 +121,12 @@ def optimize():
     return pop
 
 if __name__ == "__main__":
+    
     pop = optimize()
     
     print("-- End of (successful) evolution --")
-	best_ind = tools.selBest(pop, 1)[0]
-    print best_ind, best_ind.fitness.values
+    best_ind = tools.selBest(pop, 10)
+    for i in best_ind:
+        print("best_ind",i)
+        print("best_value",i.fitness.values)
+
