@@ -1,117 +1,114 @@
-#!usr/bin/env python
-# -*- coding:utf-8 _*-
+# encoding: UTF-8
+
 """
-@author:fonttian 
-@file: Overview.py
-@time: 2017/10/15 
+展示如何执行参数优化。
 """
 
-# Types
-from deap import base, creator
-
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-# weights 1.0, 求最大值,-1.0 求最小值
-# (1.0,-1.0,)求第一个参数的最大值,求第二个参数的最小值
-creator.create("Individual", list, fitness=creator.FitnessMin)
-
-# Initialization
+from __future__ import division
+from __future__ import print_function
+from vnpy.trader.app.ctaStrategy.ctaBacktesting import BacktestingEngine, MINUTE_DB_NAME, OptimizationSetting
+from vnpy.trader.app.ctaStrategy.strategy.strategyBBIBoll2V import BBIBoll2VStrategy
+from vnpy.trader.app.ctaStrategy.strategy.strategyBollChannel import BollChannelStrategy
 import random
-from deap import tools
+import numpy as np
+from deap import creator, base, tools, algorithms
 
-IND_SIZE = 10  # 种群数
-
-toolbox = base.Toolbox()
-toolbox.register("attribute", random.random)
-# 调用randon.random为每一个基因编码编码创建 随机初始值 也就是范围[0,1]
-toolbox.register("individual", tools.initRepeat, creator.Individual,
-                 toolbox.attribute, n=IND_SIZE)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
-
-# Operators
-# difine evaluate function
-# Note that a comma is a must
-def evaluate(individual):
-    return sum(individual),
-
-
-# use tools in deap to creat our application
-toolbox.register("mate", tools.cxTwoPoint) # mate:交叉
-toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.1) # mutate : 变异
-toolbox.register("select", tools.selTournament, tournsize=3) # select : 选择保留的最佳个体
-toolbox.register("evaluate", evaluate)  # commit our evaluate
-
-
-# Algorithms
-def main():
-    # create an initial population of 300 individuals (where
-    # each individual is a list of integers)
-    pop = toolbox.population(n=50)
-    CXPB, MUTPB, NGEN = 0.5, 0.2, 40
-
+def parameter_generate():
     '''
-    # CXPB  is the probability with which two individuals
-    #       are crossed
-    #
-    # MUTPB is the probability for mutating an individual
-    #
-    # NGEN  is the number of generations for which the
-    #       evolution runs
+    根据设置的起始值，终止值和步进，随机生成待优化的策略参数
     '''
+    parameter_list = []
+    p1 = random.randrange(25,40,5)      #入场窗口
+    p2 = random.randrange(5,8,1)      #出场窗口
+    p3 = random.randrange(25,40,5)      #基于ATR窗口止损窗
+    p4 = random.randrange(25,40,5)     #基于ATR的动态调仓
 
-    # Evaluate the entire population
-    fitnesses = map(toolbox.evaluate, pop)
-    for ind, fit in zip(pop, fitnesses):
-        ind.fitness.values = fit
+    parameter_list.append(p1)
+    parameter_list.append(p2)
+    parameter_list.append(p3)
+    parameter_list.append(p4)
 
-    print("  Evaluated %i individuals" % len(pop))  # 这时候，pop的长度还是300呢
-    print("-- Iterative %i times --" % NGEN)
+    return parameter_list
 
-    for g in range(NGEN):
-        if g % 10 == 0:
-            print("-- Generation %i --" % g)
-        # Select the next generation individuals
-        offspring = toolbox.select(pop, len(pop))
-        # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
-        # Change map to list,The documentation on the official website is wrong
+def object_func(strategy_avg):
+    """
+    本函数为优化目标函数，根据随机生成的策略参数，运行回测后自动返回2个结果指标：收益回撤比和夏普比率
+    """
+    # 创建回测引擎对象
+    engine = BacktestingEngine()
+    # 设置回测使用的数据
+    engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
+    engine.setDatabase("VnTrader_1Min_Db", 'rb0000')  # 设置使用的历史数据库
+    engine.setStartDate('20170301')                 # 设置回测用的数据起始日期
+    engine.setEndDate('20170501')                   # 设置回测用的数据起始日期
 
-        # Apply crossover and mutation on the offspring
-        for child1, child2 in zip(offspring[::2], offspring[1::2]):
-            if random.random() < CXPB:
-                toolbox.mate(child1, child2)
-                del child1.fitness.values
-                del child2.fitness.values
+    # 配置回测引擎参数
+    engine.setSlippage(1)
+    engine.setRate(1/100)
+    engine.setSize(10)
+    engine.setPriceTick(1)
+    engine.setCapital(1000000)
 
-        for mutant in offspring:
-            if random.random() < MUTPB:
-                toolbox.mutate(mutant)
-                del mutant.fitness.values
+    setting = {'bollWindow': strategy_avg[0],       #布林带窗口
+               'bollDev': strategy_avg[1],        #布林带通道阈值
+               'cciWindow': strategy_avg[2],         #CCI窗口
+               'atrWindow': strategy_avg[3],}    #ATR窗口
 
-        # Evaluate the individuals with an invalid fitness
-        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
-        for ind, fit in zip(invalid_ind, fitnesses):
-            ind.fitness.values = fit
+    #加载策略
+    engine.initStrategy(BollChannelStrategy, setting)
+    # 运行回测，返回指定的结果指标
+    engine.runBacktesting()          # 运行回测
+    #逐日回测
+    engine.calculateDailyResult()
+    backresult = engine.calculateDailyStatistics()[1]
 
-        # The population is entirely replaced by the offspring
-        pop[:] = offspring
+    returnDrawdownRatio = round(backresult['returnDrawdownRatio'],2)  #收益回撤比
+    sharpeRatio= round(backresult['sharpeRatio'],2)                   #夏普比率
+    return returnDrawdownRatio , sharpeRatio
 
-    print("-- End of (successful) evolution --")
 
-    best_ind = tools.selBest(pop, 1)[0]
+# 设置优化方向：最大化收益回撤比，最大化夏普比率
+creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
+creator.create("Individual", list, fitness=creator.FitnessMulti)
 
-    return best_ind, best_ind.fitness.values  # return the result:Last individual,The Return of Evaluate function
 
+def optimize():
+    """"""
+    toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
+
+    # 初始化
+    toolbox.register("individual", tools.initIterate, creator.Individual,
+                     parameter_generate)  # 注册个体：随机生成的策略参数parameter_generate()
+    toolbox.register("population", tools.initRepeat, list,
+                     toolbox.individual)  # 注册种群：个体形成种群
+    toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
+    toolbox.register("mutate", tools.mutUniformInt, low=4, up=40, indpb=0.6)  # 注册变异：随机生成一定区间内的整数
+    toolbox.register("evaluate", object_func)  # 注册评估：优化目标函数object_func()
+    toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
+
+    # 遗传算法参数设置
+    MU = 40  # 设置每一代选择的个体数
+    LAMBDA = 160  # 设置每一代产生的子女数
+    pop = toolbox.population(400)  # 设置族群里面的个体数量
+    CXPB, MUTPB, NGEN = 0.5, 0.35, 40  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
+
+    # 解的集合的描述统计信息
+    # 集合内平均值，标准差，最小值，最大值可以体现集合的收敛程度
+    # 收敛程度低可以增加算法的迭代次数
+    stats = tools.Statistics(lambda ind: ind.fitness.values)
+    np.set_printoptions(suppress=True)  # 对numpy默认输出的科学计数法转换
+    stats.register("mean", np.mean, axis=0)  # 统计目标优化函数结果的平均值
+    stats.register("std", np.std, axis=0)  # 统计目标优化函数结果的标准差
+    stats.register("min", np.min, axis=0)  # 统计目标优化函数结果的最小值
+    stats.register("max", np.max, axis=0)  # 统计目标优化函数结果的最大值
+
+    # 运行算法
+    algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
+                              halloffame=hof)  # esMuPlusLambda是一种基于(μ+λ)选择策略的多目标优化分段遗传算法
+
+    return pop
 
 if __name__ == "__main__":
-    # t1 = time.clock()
-    best_ind, best_ind.fitness.values = main()
-    # print(pop, best_ind, best_ind.fitness.values)
-    # print("pop",pop)
-    print("best_ind",best_ind)
-    print("best_ind.fitness.values",best_ind.fitness.values)
-
-    # t2 = time.clock()
-
-    # print(t2-t1)
+    pop = optimize()
+    print(pop)
