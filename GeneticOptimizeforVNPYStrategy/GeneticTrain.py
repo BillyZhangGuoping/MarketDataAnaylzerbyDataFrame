@@ -72,7 +72,9 @@ def main():
 
 if __name__ == "__main__":
     pop = main()
+    for individual in pop:
+        print(individual.fitness.values)
     print("-- End of (successful) evolution --")
     best_ind = tools.selBest(pop, 1)[0]
-    
+
     print best_ind, best_ind.fitness.values
