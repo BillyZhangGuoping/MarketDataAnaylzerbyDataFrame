@@ -12,6 +12,7 @@ from vnpy.trader.app.ctaStrategy.strategy.strategyBollChannel import BollChannel
 import random
 import numpy as np
 from deap import creator, base, tools, algorithms
+import multiprocessing
 
 def parameter_generate():
     '''
@@ -122,7 +123,41 @@ def optimize():
 
 if __name__ == "__main__":
     
-    pop = optimize()
+    toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
+
+    # 初始化
+    toolbox.register("individual", tools.initIterate, creator.Individual,
+                     parameter_generate)  # 注册个体：随机生成的策略参数parameter_generate()
+    toolbox.register("population", tools.initRepeat, list,
+                     toolbox.individual)  # 注册种群：个体形成种群
+    toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
+    toolbox.register("mutate", tools.mutUniformInt, low=4, up=40, indpb=0.6)  # 注册变异：随机生成一定区间内的整数
+    toolbox.register("evaluate", object_func)  # 注册评估：优化目标函数object_func()
+    toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
+
+    # 遗传算法参数设置
+    MU = 40  # 设置每一代选择的个体数
+    LAMBDA = 160  # 设置每一代产生的子女数
+    pop = toolbox.population(400)  # 设置族群里面的个体数量
+    CXPB, MUTPB, NGEN = 0.5, 0.35, 60  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
+
+    # 解的集合的描述统计信息
+    # 集合内平均值，标准差，最小值，最大值可以体现集合的收敛程度
+    # 收敛程度低可以增加算法的迭代次数
+    stats = tools.Statistics(lambda ind: ind.fitness.values)
+    np.set_printoptions(suppress=True)  # 对numpy默认输出的科学计数法转换
+    stats.register("mean", np.mean, axis=0)  # 统计目标优化函数结果的平均值
+    stats.register("std", np.std, axis=0)  # 统计目标优化函数结果的标准差
+    stats.register("min", np.min, axis=0)  # 统计目标优化函数结果的最小值
+    stats.register("max", np.max, axis=0)  # 统计目标优化函数结果的最大值
+
+    pool = multiprocessing.Pool(processes=8)
+    toolbox.register("map", pool.map)
+    # 运行算法
+    algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
+                              halloffame=hof)  # esMuPlusLambda是一种基于(μ+λ)选择策略的多目标优化分段遗传算法
+    
     
     print("-- End of (successful) evolution --")
     best_ind = tools.selBest(pop, 10)
