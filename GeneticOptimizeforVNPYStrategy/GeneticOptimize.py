@@ -18,15 +18,21 @@ def parameter_generate():
     根据设置的起始值，终止值和步进，随机生成待优化的策略参数
     '''
     parameter_list = []
-    p1 = random.randrange(10,50,5)      #入场窗口
-    p2 = random.randrange(1,11,2)      #出场窗口
-    p3 = random.randrange(25,50,5)      #基于ATR窗口止损窗
-    p4 = random.randrange(25,40,5)     #基于ATR的动态调仓
+    p1 = random.randrange(20,55,5)      #入场窗口
+    p2 = random.randrange(2,12,1)      #出场窗口
+    p3 = random.randrange(20,55,5)      #基于ATR窗口止损窗
+    p4 = random.randrange(2,12,1)      #出场窗口
+    p5 = random.randrange(25,55,5)     #基于ATR的动态调仓
+    p6 = random.randrange(3,12,1)
+    p7 = random.randrange(5,20,5)
 
     parameter_list.append(p1)
     parameter_list.append(p2)
     parameter_list.append(p3)
     parameter_list.append(p4)
+    parameter_list.append(p5)
+    parameter_list.append(p6)
+    parameter_list.append(p7)
 
     return parameter_list
 
@@ -38,9 +44,9 @@ def object_func(strategy_avg):
     engine = BacktestingEngine()
     # 设置回测使用的数据
     engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
-    engine.setDatabase("VnTrader_1Min_Db", 'rb0000')  # 设置使用的历史数据库
-    engine.setStartDate('20170401')                 # 设置回测用的数据起始日期
-    engine.setEndDate('20181230')                   # 设置回测用的数据起始日期
+    engine.setDatabase("VnTrader_1Min_Db", 'rb1905')  # 设置使用的历史数据库
+    engine.setStartDate('20181101')                 # 设置回测用的数据起始日期
+    engine.setEndDate('20190330')                   # 设置回测用的数据起始日期
 
     # 配置回测引擎参数
     engine.setSlippage(1)
@@ -49,13 +55,18 @@ def object_func(strategy_avg):
     engine.setPriceTick(1)
     engine.setCapital(1000000)
 
-    setting = {'bollWindow': strategy_avg[0],       #布林带窗口
-               'bollDev': strategy_avg[1],        #布林带通道阈值
-               'cciWindow': strategy_avg[2],         #CCI窗口
-               'atrWindow': strategy_avg[3],}    #ATR窗口
+    setting = {
+                'bollWindow': strategy_avg[0],       #布林带窗口
+                'bollDev': strategy_avg[1],        #布林带通道阈值
+                'bbibollWindow':strategy_avg[2],
+                'bbibollDev':strategy_avg[3],
+                'slMultiplier':strategy_avg[4]/10,
+                'profitRate':strategy_avg[5]/1000,
+                'barMins':strategy_avg[6],
+               }    #ATR窗口
 
     #加载策略
-    engine.initStrategy(BollChannelStrategy, setting)
+    engine.initStrategy(BBIBoll2VStrategy, setting)
     # 运行回测，返回指定的结果指标
     engine.runBacktesting()          # 运行回测
     #逐日回测
@@ -90,7 +101,7 @@ def optimize():
     MU = 40  # 设置每一代选择的个体数
     LAMBDA = 160  # 设置每一代产生的子女数
     pop = toolbox.population(400)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.35, 40  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    CXPB, MUTPB, NGEN = 0.5, 0.35, 60  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
@@ -111,4 +122,7 @@ def optimize():
 
 if __name__ == "__main__":
     pop = optimize()
-    print(pop)
+    
+    print("-- End of (successful) evolution --")
+	best_ind = tools.selBest(pop, 1)[0]
+    print best_ind, best_ind.fitness.values

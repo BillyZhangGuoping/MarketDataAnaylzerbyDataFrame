@@ -1,17 +1,12 @@
 #!usr/bin/env python
 # -*- coding:utf-8 _*-
 """
-@author:fonttian 
-@file: Overview.py
-@time: 2017/10/15 
+https://deap.readthedocs.io/en/master/overview.html
 """
 
 # Types
 from deap import base, creator
-
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-# weights 1.0, 求最大值,-1.0 求最小值
-# (1.0,-1.0,)求第一个参数的最大值,求第二个参数的最小值
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
 # Initialization
@@ -44,37 +39,19 @@ toolbox.register("evaluate", evaluate)  # commit our evaluate
 
 # Algorithms
 def main():
-    # create an initial population of 300 individuals (where
-    # each individual is a list of integers)
     pop = toolbox.population(n=50)
     CXPB, MUTPB, NGEN = 0.5, 0.2, 40
-
-    '''
-    # CXPB  is the probability with which two individuals
-    #       are crossed
-    #
-    # MUTPB is the probability for mutating an individual
-    #
-    # NGEN  is the number of generations for which the
-    #       evolution runs
-    '''
 
     # Evaluate the entire population
     fitnesses = map(toolbox.evaluate, pop)
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    print("  Evaluated %i individuals" % len(pop))  # 这时候，pop的长度还是300呢
-    print("-- Iterative %i times --" % NGEN)
-
     for g in range(NGEN):
-        if g % 10 == 0:
-            print("-- Generation %i --" % g)
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
-        # Change map to list,The documentation on the official website is wrong
+        offspring = map(toolbox.clone, offspring)
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
@@ -97,20 +74,16 @@ def main():
         # The population is entirely replaced by the offspring
         pop[:] = offspring
 
-    print("-- End of (successful) evolution --")
-
-    best_ind = tools.selBest(pop, 1)[0]
-
-    return best_ind, best_ind.fitness.values  # return the result:Last individual,The Return of Evaluate function
+    return pop
 
 
 if __name__ == "__main__":
     # t1 = time.clock()
-    best_ind, best_ind.fitness.values = main()
-    # print(pop, best_ind, best_ind.fitness.values)
-    # print("pop",pop)
-    print("best_ind",best_ind)
-    print("best_ind.fitness.values",best_ind.fitness.values)
+    pop = main()
+    best_ind = tools.selBest(pop, 3)
+    for i in best_ind:
+        print("best_ind",i)
+        print("best_value",i.fitness.values)
 
     # t2 = time.clock()
 
