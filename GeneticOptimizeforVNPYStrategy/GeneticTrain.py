@@ -71,13 +71,8 @@ def main():
 
 
 if __name__ == "__main__":
-    # t1 = time.clock()
-    best_ind, best_ind.fitness.values = main()
-    # print(pop, best_ind, best_ind.fitness.values)
-    # print("pop",pop)
-    print("best_ind",best_ind)
-    print("best_ind.fitness.values",best_ind.fitness.values)
-
-    # t2 = time.clock()
-
-    # print(t2-t1)
+    pop = main()
+    print("-- End of (successful) evolution --")
+    best_ind = tools.selBest(pop, 1)[0]
+    
+    print best_ind, best_ind.fitness.values
