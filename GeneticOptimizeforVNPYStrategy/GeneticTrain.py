@@ -13,7 +13,7 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 import random
 from deap import tools
 
-IND_SIZE = 10
+IND_SIZE = 1000000
 
 toolbox = base.Toolbox()
 toolbox.register("attribute", random.random)
@@ -29,11 +29,15 @@ toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("evaluate", evaluate)
+import multiprocessing
+
 
 # Algorithms
 def main():
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+    toolbox.register("map", pool.map)
     pop = toolbox.population(n=50)
-    CXPB, MUTPB, NGEN = 0.5, 0.2, 40
+    CXPB, MUTPB, NGEN = 0.5, 0.2, 400
 
     # Evaluate the entire population
     fitnesses = map(toolbox.evaluate, pop)
@@ -58,6 +62,7 @@ def main():
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
 
+        
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = map(toolbox.evaluate, invalid_ind)

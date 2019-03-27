@@ -18,10 +18,12 @@ def parameter_generate():
     根据设置的起始值，终止值和步进，随机生成待优化的策略参数
     '''
     parameter_list = []
+    timerange = [1,2,3,4,5,10,15,20]
     p1 = random.randrange(25,40,5)      #入场窗口
     p2 = random.randrange(5,8,1)      #出场窗口
     p3 = random.randrange(25,40,5)      #基于ATR窗口止损窗
-    p4 = random.randrange(25,40,5)     #基于ATR的动态调仓
+    # p4 = random.randrange(25,40,5)     #基于ATR的动态调仓
+    p4 = random.choice(timerange)
 
     parameter_list.append(p1)
     parameter_list.append(p2)
@@ -90,7 +92,7 @@ def optimize():
     MU = 40  # 设置每一代选择的个体数
     LAMBDA = 160  # 设置每一代产生的子女数
     pop = toolbox.population(400)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.35, 40  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    CXPB, MUTPB, NGEN = 0.5, 0.00, 40  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
