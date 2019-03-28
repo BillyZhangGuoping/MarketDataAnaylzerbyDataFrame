@@ -144,9 +144,9 @@ def optimize():
 if __name__ == "__main__":
 
     toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
-    # pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
-    # toolbox.register("map", pool.map)
-    toolbox.register("map", futures.map)
+    pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count()-2)
+    toolbox.register("map", pool.map)
+    # toolbox.register("map", futures.map)
     # 初始化
     toolbox.register("individual", tools.initIterate, creator.Individual,
                      parameter_generate)  # 注册个体：随机生成的策略参数parameter_generate()
