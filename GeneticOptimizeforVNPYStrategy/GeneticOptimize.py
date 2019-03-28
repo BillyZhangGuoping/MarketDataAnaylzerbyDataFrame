@@ -22,6 +22,7 @@ def parameter_generate():
     根据设置的起始值，终止值和步进，随机生成待优化的策略参数
     '''
     parameter_list = []
+<<<<<<< HEAD
     timerange = [3,5,10,15,20]
 
     p1 = random.randrange(10,55,1)      #入场窗口
@@ -31,6 +32,14 @@ def parameter_generate():
     p5 = random.randrange(20,70,1)     #基于ATR的动态调仓
     p6 = random.randrange(1,30,1)
     p7 = random.choice(timerange)
+=======
+    timerange = [1,2,3,4,5,10,15,20]
+    p1 = random.randrange(25,40,5)      #入场窗口
+    p2 = random.randrange(5,8,1)      #出场窗口
+    p3 = random.randrange(25,40,5)      #基于ATR窗口止损窗
+    # p4 = random.randrange(25,40,5)     #基于ATR的动态调仓
+    p4 = random.choice(timerange)
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
     parameter_list.append(p1)
     parameter_list.append(p2)
@@ -65,9 +74,15 @@ def object_func(strategy_avg):
     engine = BacktestingEngine()
     # 设置回测使用的数据
     engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
+<<<<<<< HEAD
     engine.setDatabase("VnTrader_1Min_Db", 'rb.hot')  # 设置使用的历史数据库
     engine.setStartDate(date_s)                 # 设置回测用的数据起始日期
     engine.setEndDate(date_e)                   # 设置回测用的数据起始日期
+=======
+    engine.setDatabase("VnTrader_1Min_Db", 'rb0000')  # 设置使用的历史数据库
+    engine.setStartDate('20170301')                 # 设置回测用的数据起始日期
+    engine.setEndDate('20170501')                   # 设置回测用的数据起始日期
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
     # 配置回测引擎参数
     engine.setSlippage(1)
@@ -122,7 +137,11 @@ def optimize():
     MU = 40  # 设置每一代选择的个体数
     LAMBDA = 260  # 设置每一代产生的子女数
     pop = toolbox.population(400)  # 设置族群里面的个体数量
+<<<<<<< HEAD
     CXPB, MUTPB, NGEN = 0.5, 0.0, 100  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+=======
+    CXPB, MUTPB, NGEN = 0.5, 0.00, 40  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息

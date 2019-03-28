@@ -13,37 +13,43 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 import random
 from deap import tools
 
-IND_SIZE = 10  # 种群数
+IND_SIZE = 1000000
 
 toolbox = base.Toolbox()
 toolbox.register("attribute", random.random)
-# 调用randon.random为每一个基因编码编码创建 随机初始值 也就是范围[0,1]
 toolbox.register("individual", tools.initRepeat, creator.Individual,
                  toolbox.attribute, n=IND_SIZE)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 import multiprocessing
 
+<<<<<<< HEAD
 pool = multiprocessing.Pool()
 toolbox.register("map", pool.map)
 
+=======
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 # Operators
-# difine evaluate function
-# Note that a comma is a must
 def evaluate(individual):
     return sum(individual),
 
-
-# use tools in deap to creat our application
-toolbox.register("mate", tools.cxTwoPoint) # mate:交叉
-toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.1) # mutate : 变异
-toolbox.register("select", tools.selTournament, tournsize=3) # select : 选择保留的最佳个体
-toolbox.register("evaluate", evaluate)  # commit our evaluate
+toolbox.register("mate", tools.cxTwoPoint)
+toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.1)
+toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("evaluate", evaluate)
+import multiprocessing
 
 
 # Algorithms
 def main():
+<<<<<<< HEAD
     pop = toolbox.population(n=50)
     CXPB, MUTPB, NGEN = 0.5, 0.2, 40
+=======
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+    toolbox.register("map", pool.map)
+    pop = toolbox.population(n=50)
+    CXPB, MUTPB, NGEN = 0.5, 0.2, 400
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
     # Evaluate the entire population
     fitnesses = toolbox.map(toolbox.evaluate, pop)
@@ -54,7 +60,11 @@ def main():
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
+<<<<<<< HEAD
         offspring = toolbox.map(toolbox.clone, offspring)
+=======
+        offspring = map(toolbox.clone, offspring)
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
@@ -68,6 +78,7 @@ def main():
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
 
+        
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
@@ -77,11 +88,15 @@ def main():
         # The population is entirely replaced by the offspring
         pop[:] = offspring
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
     return pop
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     # t1 = time.clock()
     pop = main()
     best_ind = tools.selBest(pop, 3)
@@ -90,5 +105,12 @@ if __name__ == "__main__":
         print("best_value",i.fitness.values)
 
     # t2 = time.clock()
+=======
+    pop = main()
+    for individual in pop:
+        print(individual.fitness.values)
+    print("-- End of (successful) evolution --")
+    best_ind = tools.selBest(pop, 1)[0]
+>>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
-    # print(t2-t1)
+    print best_ind, best_ind.fitness.values
