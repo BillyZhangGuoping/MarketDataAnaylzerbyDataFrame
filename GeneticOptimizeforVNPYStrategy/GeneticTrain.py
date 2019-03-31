@@ -22,12 +22,9 @@ toolbox.register("individual", tools.initRepeat, creator.Individual,
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 import multiprocessing
 
-<<<<<<< HEAD
 pool = multiprocessing.Pool()
 toolbox.register("map", pool.map)
 
-=======
->>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 # Operators
 def evaluate(individual):
     return sum(individual),
@@ -41,15 +38,8 @@ import multiprocessing
 
 # Algorithms
 def main():
-<<<<<<< HEAD
     pop = toolbox.population(n=50)
     CXPB, MUTPB, NGEN = 0.5, 0.2, 40
-=======
-    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
-    toolbox.register("map", pool.map)
-    pop = toolbox.population(n=50)
-    CXPB, MUTPB, NGEN = 0.5, 0.2, 400
->>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
     # Evaluate the entire population
     fitnesses = toolbox.map(toolbox.evaluate, pop)
@@ -60,11 +50,7 @@ def main():
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
-<<<<<<< HEAD
         offspring = toolbox.map(toolbox.clone, offspring)
-=======
-        offspring = map(toolbox.clone, offspring)
->>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
@@ -88,15 +74,10 @@ def main():
         # The population is entirely replaced by the offspring
         pop[:] = offspring
 
-<<<<<<< HEAD
-
-=======
->>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
     return pop
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     # t1 = time.clock()
     pop = main()
     best_ind = tools.selBest(pop, 3)
@@ -105,12 +86,5 @@ if __name__ == "__main__":
         print("best_value",i.fitness.values)
 
     # t2 = time.clock()
-=======
-    pop = main()
-    for individual in pop:
-        print(individual.fitness.values)
-    print("-- End of (successful) evolution --")
-    best_ind = tools.selBest(pop, 1)[0]
->>>>>>> cf6e3e9f0ec8b9cca0840f1d2a24c0ce17d24064
 
     print best_ind, best_ind.fitness.values
