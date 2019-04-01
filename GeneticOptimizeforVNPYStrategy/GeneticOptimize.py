@@ -100,12 +100,39 @@ def object_func(strategy_avg):
     profitLossRatio= round(backresult['profitLossRatio'],3)                   #夏普比率                 #夏普比率
     return winningRate,profitLossRatio
 
-
 # 设置优化方向：最大化收益回撤比，最大化夏普比率
 creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
 creator.create("Individual", list, fitness=creator.FitnessMulti)
-def mutArrayGroup():
-    pass
+
+def mutArrayGroup(individual, indpb):
+    size = len(individual)
+    parameter_list = []
+    timerange = [3,5,10,15,20]
+
+    p1 = random.randrange(10,55,1)      #入场窗口
+    p2 = random.randrange(1,15,1)      #出场窗口
+    p3 = random.randrange(20,55,1)      #基于ATR窗口止损窗
+    p4 = random.randrange(1,12,1)      #出场窗口
+    p5 = random.randrange(20,70,1)     #基于ATR的动态调仓
+    p6 = random.randrange(1,30,1)
+    p7 = random.choice(timerange)
+    p8 = random.randrange(0,5,1)
+
+    parameter_list.append(p1)
+    parameter_list.append(p2)
+    parameter_list.append(p3)
+    parameter_list.append(p4)
+    parameter_list.append(p5)
+    parameter_list.append(p6)
+    parameter_list.append(p7)
+    parameter_list.append(p8)
+
+    for i, xl, xu in zip(xrange(size)):
+        if random.random() < indpb:
+            individual[i] = parameter_list[i]
+
+    return individual,
+
 def optimize():
     toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
     pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count()-2))
@@ -117,7 +144,7 @@ def optimize():
     toolbox.register("population", tools.initRepeat, list,
                      toolbox.individual)  # 注册种群：个体形成种群
     toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
-    toolbox.register("mutate", tools.mutUniformInt, low=2, up=60, indpb=0.6)  # 注册变异：随机生成一定区间内的整数
+    toolbox.register("mutate", tools.mutArrayGroup,  indpb=0.6)  # 注册变异：随机生成一定区间内的整数
     toolbox.register("evaluate", object_func)  # 注册评估：优化目标函数object_func()
     toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
@@ -125,7 +152,7 @@ def optimize():
     MU = 4  # 设置每一代选择的个体数
     LAMBDA = 5 # 设置每一代产生的子女数
     pop = toolbox.population(10)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.00, 1  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    CXPB, MUTPB, NGEN = 0.5, 0.3, 1  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
