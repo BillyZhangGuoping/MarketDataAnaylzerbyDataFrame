@@ -93,7 +93,7 @@ def object_func(strategy_avg):
     # 运行回测，返回指定的结果指标
     engine.runBacktesting()          # 运行回测
     #逐日回测
-    engine.calculateDailyResult()
+    
     backresult = engine.calculateBacktestingResult()
 
     winningRate = round(backresult['winningRate'],3)  #收益回撤比
@@ -127,7 +127,7 @@ def mutArrayGroup(individual, indpb):
     parameter_list.append(p7)
     parameter_list.append(p8)
 
-    for i, xl, xu in zip(xrange(size)):
+    for i in zip(xrange(size)):
         if random.random() < indpb:
             individual[i] = parameter_list[i]
 
@@ -144,7 +144,7 @@ def optimize():
     toolbox.register("population", tools.initRepeat, list,
                      toolbox.individual)  # 注册种群：个体形成种群
     toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
-    toolbox.register("mutate", tools.mutArrayGroup,  indpb=0.6)  # 注册变异：随机生成一定区间内的整数
+    toolbox.register("mutate", mutArrayGroup,  indpb=0.6)  # 注册变异：随机生成一定区间内的整数
     toolbox.register("evaluate", object_func)  # 注册评估：优化目标函数object_func()
     toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
