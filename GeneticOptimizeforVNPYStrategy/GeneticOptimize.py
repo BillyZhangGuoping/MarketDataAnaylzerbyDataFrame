@@ -13,7 +13,6 @@ import random
 import numpy as np
 from deap import creator, base, tools, algorithms
 import multiprocessing
-from scoop import futures
 import time,datetime
 
 
@@ -67,9 +66,9 @@ def object_func(strategy_avg):
     engine = BacktestingEngine()
     # 设置回测使用的数据
     engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
-    engine.setDatabase("VnTrader_1Min_Db", 'rb.hot')  # 设置使用的历史数据库
-    engine.setStartDate('20180903')                 # 设置回测用的数据起始日期
-    engine.setEndDate('20190201')                   # 设置回测用的数据起始日期
+    engine.setDatabase("VnTrader_1Min_Db", 'rb0000')  # 设置使用的历史数据库
+    engine.setStartDate('20160103')                 # 设置回测用的数据起始日期
+    engine.setEndDate('20160501')                   # 设置回测用的数据起始日期
 
     # 配置回测引擎参数
     engine.setSlippage(1)
@@ -95,21 +94,21 @@ def object_func(strategy_avg):
     engine.runBacktesting()          # 运行回测
     #逐日回测
     engine.calculateDailyResult()
-    backresult = engine.calculateDailyStatistics()[1]
+    backresult = engine.calculateBacktestingResult()
 
-    returnDrawdownRatio = round(backresult['annualizedReturn'],3)  #收益回撤比
-    sharpeRatio= round(backresult['sharpeRatio'],3)                   #夏普比率                 #夏普比率
-    return sharpeRatio,returnDrawdownRatio
+    winningRate = round(backresult['winningRate'],3)  #收益回撤比
+    profitLossRatio= round(backresult['profitLossRatio'],3)                   #夏普比率                 #夏普比率
+    return winningRate,profitLossRatio
 
 
 # 设置优化方向：最大化收益回撤比，最大化夏普比率
 creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
 creator.create("Individual", list, fitness=creator.FitnessMulti)
 def mutArrayGroup():
-
+    pass
 def optimize():
     toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
-    pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count()-4))
+    pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count()-2))
     toolbox.register("map", pool.map)
     # toolbox.register("map", futures.map)
     # 初始化
@@ -123,10 +122,10 @@ def optimize():
     toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
     # 遗传算法参数设置
-    MU = 400  # 设置每一代选择的个体数
-    LAMBDA = 500  # 设置每一代产生的子女数
-    pop = toolbox.population(3000)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.00, 300  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    MU = 4  # 设置每一代选择的个体数
+    LAMBDA = 5 # 设置每一代产生的子女数
+    pop = toolbox.population(10)  # 设置族群里面的个体数量
+    CXPB, MUTPB, NGEN = 0.5, 0.00, 1  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
@@ -146,10 +145,14 @@ def optimize():
 
 if __name__ == "__main__":
     pop = optimize()
-    
+
     print("-- End of (successful) evolution --")
     best_ind = tools.selBest(pop, 50)
     for i in best_ind:
         print("best_ind",i)
         print("best_value",i.fitness.values)
-
+    # strategy_avg1 = parameter_generate()
+    #
+    # print(strategy_avg1)
+    # return1, return2 =object_func( strategy_avg1)
+    # print(return1, return2)
