@@ -21,7 +21,7 @@ def parameter_generate():
     根据设置的起始值，终止值和步进，随机生成待优化的策略参数
     '''
     parameter_list = []
-    timerange = [3,5,10,15,20]
+    timerange = [2,3,5,10,15,20]
 
     p1 = random.randrange(10,55,1)      #入场窗口
     p2 = random.randrange(1,15,1)      #出场窗口
@@ -97,18 +97,20 @@ def object_func(strategy_avg):
     backresult = engine.calculateBacktestingResult()
 
     winningRate = round(backresult['winningRate'],3)  #收益回撤比
-    profitLossRatio= round(backresult['profitLossRatio'],3)                   #夏普比率                 #夏普比率
-    return winningRate,profitLossRatio
+    sharpeRatio= round(backresult['sharpeRatio'],3)                   #夏普比率                 #夏普比率
+    capital= round(backresult['capital'],3)   
+    return capital,sharpeRatio,winningRate
 
 # 设置优化方向：最大化收益回撤比，最大化夏普比率
-creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
+creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
 creator.create("Individual", list, fitness=creator.FitnessMulti)
 
 def mutArrayGroup(individual,parameterlist, indpb):
     size = len(individual)
+    paralist = parameterlist()
     for i in xrange(size):
         if random.random() < indpb:
-            individual[i] = parameterlist[i]
+            individual[i] = paralist[i]
 
     return individual,
 
@@ -128,10 +130,10 @@ def optimize():
     toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
     # 遗传算法参数设置
-    MU = 400  # 设置每一代选择的个体数
-    LAMBDA = 500 # 设置每一代产生的子女数
-    pop = toolbox.population(1000)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.3, 100  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    MU = 800  # 设置每一代选择的个体数
+    LAMBDA = 800 # 设置每一代产生的子女数
+    pop = toolbox.population(3000)  # 设置族群里面的个体数量
+    CXPB, MUTPB, NGEN = 0.5, 0.3, 300  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
@@ -153,7 +155,7 @@ if __name__ == "__main__":
     pop = optimize()
 
     print("-- End of (successful) evolution --")
-    best_ind = tools.selBest(pop, 50)
+    best_ind = tools.selBest(pop, 100)
     for i in best_ind:
         print("best_ind",i)
         print("best_value",i.fitness.values)
