@@ -89,6 +89,7 @@ def object_func(strategy_avg):
                }    #ATR窗口
 
     #加载策略
+    engine.clearBacktestingResult()
     engine.initStrategy(BBIBoll2VStrategy, setting)
     # 运行回测，返回指定的结果指标
     engine.runBacktesting()          # 运行回测
