@@ -155,10 +155,19 @@ if __name__ == "__main__":
     pop = optimize()
 
     print("-- End of (successful) evolution --")
-    best_ind = tools.selBest(pop, 100)
+    best_ind = tools.selBest(pop, 200)
     for i in best_ind:
         print("best_ind",i)
         print("best_value",i.fitness.values)
+    #输出到文本
+    filepath = "C:\Users\shui0\OneDrive\Documents\Optimization\\DonchianTrendStrategy"+ time.strftime("%m%d_%H_%M") +".txt"
+    try:
+        f = open(filepath,'a')
+        for i in best_ind:
+            f.write("best_ind:"+str(i)+'\t')
+            f.write("best_value:"+str(i.fitness.values)+'\n')
+    except:
+        print 'can not caught the comments!'
     # strategy_avg1 = parameter_generate()
     #
     # print(strategy_avg1)
