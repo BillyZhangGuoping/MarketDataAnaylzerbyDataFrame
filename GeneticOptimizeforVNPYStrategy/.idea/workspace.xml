@@ -10,11 +10,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="886">
-              <caret line="130" column="42" selection-start-line="130" selection-start-column="42" selection-end-line="130" selection-end-column="42" />
+            <state relative-caret-position="342">
+              <caret line="107" column="64" lean-forward="true" selection-start-line="107" selection-start-column="64" selection-end-line="107" selection-end-column="64" />
               <folding>
                 <element signature="e#40#71#0" expanded="true" />
               </folding>
@@ -22,11 +22,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/emo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="551">
-              <caret line="448" column="52" selection-start-line="448" selection-start-column="52" selection-end-line="448" selection-end-column="57" />
+            <state relative-caret-position="296">
+              <caret line="433" column="38" selection-start-line="433" selection-start-column="38" selection-end-line="433" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -61,8 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/ctaBacktesting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="1003" column="32" selection-start-line="1003" selection-start-column="8" selection-end-line="1003" selection-end-column="32" />
+            <state relative-caret-position="156">
+              <caret line="847" column="57" selection-start-line="847" selection-start-column="50" selection-end-line="847" selection-end-column="57" />
               <folding>
                 <element signature="e#82#113#0" expanded="true" />
               </folding>
@@ -100,13 +100,18 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6001">
-              <caret line="365" column="42" selection-start-line="365" selection-start-column="42" selection-end-line="365" selection-end-column="42" />
+            <state relative-caret-position="155">
+              <caret line="360" column="18" lean-forward="true" selection-start-line="360" selection-start-column="18" selection-end-line="360" selection-end-column="18" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>sharpeRatio</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -122,7 +127,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="605" />
     <option name="y" value="98" />
     <option name="width" value="1616" />
@@ -225,16 +230,25 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4995206" visible="true" weight="0.24973656" />
-      <window_info active="true" id="Structure" order="1" sideWeight="0.5004794" side_tool="true" visible="true" weight="0.24973656" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49928468" visible="true" weight="0.24973656" />
+      <window_info id="Structure" order="1" sideWeight="0.5007153" side_tool="true" visible="true" weight="0.24973656" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32981783" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32981783" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39980826" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -319,40 +333,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/emo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="433" column="38" selection-start-line="433" selection-start-column="38" selection-end-line="433" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6001">
-          <caret line="365" column="42" selection-start-line="365" selection-start-column="42" selection-end-line="365" selection-end-column="42" />
+        <state relative-caret-position="155">
+          <caret line="360" column="18" lean-forward="true" selection-start-line="360" selection-start-column="18" selection-end-line="360" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/ctaBacktesting.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="1003" column="32" selection-start-line="1003" selection-start-column="8" selection-end-line="1003" selection-end-column="32" />
+        <state relative-caret-position="156">
+          <caret line="847" column="57" selection-start-line="847" selection-start-column="50" selection-end-line="847" selection-end-column="57" />
           <folding>
             <element signature="e#82#113#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="886">
-          <caret line="130" column="42" selection-start-line="130" selection-start-column="42" selection-end-line="130" selection-end-column="42" />
+        <state relative-caret-position="342">
+          <caret line="107" column="64" lean-forward="true" selection-start-line="107" selection-start-column="64" selection-end-line="107" selection-end-column="64" />
           <folding>
             <element signature="e#40#71#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/emo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="448" column="52" selection-start-line="448" selection-start-column="52" selection-end-line="448" selection-end-column="57" />
         </state>
       </provider>
     </entry>
