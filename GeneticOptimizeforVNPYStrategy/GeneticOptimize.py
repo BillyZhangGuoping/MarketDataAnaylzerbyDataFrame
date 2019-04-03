@@ -66,9 +66,9 @@ def object_func(strategy_avg):
     engine = BacktestingEngine()
     # 设置回测使用的数据
     engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
-    engine.setDatabase("VnTrader_1Min_Db", 'rb.hot')  # 设置使用的历史数据库
-    engine.setStartDate('20180901')                 # 设置回测用的数据起始日期
-    engine.setEndDate('20190201')                   # 设置回测用的数据起始日期
+    engine.setDatabase("VnTrader_1Min_Db", 'rb1901')  # 设置使用的历史数据库
+    engine.setStartDate('20180701')                 # 设置回测用的数据起始日期
+    engine.setEndDate('20181201')                   # 设置回测用的数据起始日期
 
     # 配置回测引擎参数
     engine.setSlippage(1)
@@ -87,7 +87,7 @@ def object_func(strategy_avg):
                 'barMins':strategy_avg[6],
                 'endsize':strategy_avg[7],
                }    #ATR窗口
-
+    engine.clearBacktestingResult()
     #加载策略
     engine.initStrategy(BBIBoll2VStrategy, setting)
     # 运行回测，返回指定的结果指标
@@ -95,14 +95,20 @@ def object_func(strategy_avg):
     #逐日回测
     engine.calculateDailyResult()
     backresult = engine.calculateBacktestingResult()
-
-    winningRate = round(backresult['winningRate'],3)  #收益回撤比
-    sharpeRatio= round(backresult['sharpeRatio'],3)                   #夏普比率                 #夏普比率
-    capital= round(backresult['capital'],3)   
-    return capital,sharpeRatio,winningRate
+    try:
+        # profitLossRatio = round(backresult['profitLossRatio'], 3) #收益回撤比
+        profitLossRatio = round(backresult['profitLossRatio'],3)                   #夏普比率                 #夏普比率
+        sharpeRatio= round(backresult['sharpeRatio'],3)
+    except:
+        print("Error: ")
+        sharpeRatio = 0
+        profitLossRatio = 0                      #收益回撤比
+        averageWinning= 0                  #夏普比率                 #夏普比率
+        capital= 0
+    return sharpeRatio,profitLossRatio
 
 # 设置优化方向：最大化收益回撤比，最大化夏普比率
-creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
+creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
 creator.create("Individual", list, fitness=creator.FitnessMulti)
 
 def mutArrayGroup(individual,parameterlist, indpb):
@@ -130,10 +136,10 @@ def optimize():
     toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
     # 遗传算法参数设置
-    MU = 800  # 设置每一代选择的个体数
-    LAMBDA = 800 # 设置每一代产生的子女数
-    pop = toolbox.population(3000)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.3, 300  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    MU = 500  # 设置每一代选择的个体数
+    LAMBDA = 500 # 设置每一代产生的子女数
+    pop = toolbox.population(1500)  # 设置族群里面的个体数量
+    CXPB, MUTPB, NGEN = 0.5, 0.3, 150  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
@@ -161,13 +167,12 @@ if __name__ == "__main__":
         print("best_value",i.fitness.values)
     #输出到文本
     filepath = "C:\Users\shui0\OneDrive\Documents\Optimization\\DonchianTrendStrategy"+ time.strftime("%m%d_%H_%M") +".txt"
-    try:
-        f = open(filepath,'a')
-        for i in best_ind:
-            f.write("best_ind:"+str(i)+'\t')
-            f.write("best_value:"+str(i.fitness.values)+'\n')
-    except:
-        print 'can not caught the comments!'
+
+    f = open(filepath,'a')
+    for i in best_ind:
+        f.write("best_ind:"+str(i)+'\t')
+        f.write("best_value:"+str(i.fitness.values)+'\n')
+
     # strategy_avg1 = parameter_generate()
     #
     # print(strategy_avg1)
