@@ -43,32 +43,32 @@ def parameter_generate():
 
     return parameter_list
 
-def object_func(strategy_avg):
+def object_func(strategy_avg, seed = 0):
     """
     本函数为优化目标函数，根据随机生成的策略参数，运行回测后自动返回2个结果指标：收益回撤比和夏普比率
     """
 
+    import time, random
+    a1 = (2018, 2, 8, 0, 0, 0, 0, 0, 0)  # 设置开始日期时间元组（1976-01-01 00：00：00）
+    a2 = (2018, 9, 15, 23, 59, 59, 0, 0, 0)  # 设置结束日期时间元组（1990-12-31 23：59：59）
 
-    # a1=(2018,1,8,0,0,0,0,0,0)              #设置开始日期时间元组（1976-01-01 00：00：00）
-    # a2=(2019,1,15,23,59,59,0,0,0)    #设置结束日期时间元组（1990-12-31 23：59：59）
-
-    # start=time.mktime(a1)    #生成开始时间戳
-    # end=time.mktime(a2)      #生成结束时间戳
-    # t1=random.randint(start,end)    #在开始和结束时间戳中随机取出一个
-    # t2 =(t1+10000000)         #将时间戳生成时间元组
-    # date_touple1=time.localtime(t1)          #将时间戳生成时间元组
-    # date_touple2=time.localtime(t2)          #将时间戳生成时间元组
-    # date_s=time.strftime("%Y%m%d",date_touple1)  #将时间元组转成格式化字符串（1976-05-21）
-    # date_e=time.strftime("%Y%m%d",date_touple2) 
-    #随机生成10个日期字符串
+    start = time.mktime(a1)  # 生成开始时间戳
+    end = time.mktime(a2)  # 生成结束时间戳
+    random.seed(seed)
+    t1 = random.randint(start, end)  # 在开始和结束时间戳中随机取出一个
+    t2 = (t1 + 10000000)  # 将时间戳生成时间元组
+    date_touple1 = time.localtime(t1)  # 将时间戳生成时间元组
+    date_touple2 = time.localtime(t2)  # 将时间戳生成时间元组
+    date_s = time.strftime("%Y%m%d", date_touple1)  # 将时间元组转成格式化字符串（1976-05-21）
+    date_e = time.strftime("%Y%m%d", date_touple2)
 
     # 创建回测引擎对象
     engine = BacktestingEngine()
     # 设置回测使用的数据
     engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
     engine.setDatabase("VnTrader_1Min_Db", 'rb1901')  # 设置使用的历史数据库
-    engine.setStartDate('20180701')                 # 设置回测用的数据起始日期
-    engine.setEndDate('20181201')                   # 设置回测用的数据起始日期
+    engine.setStartDate('date_s')                 # 设置回测用的数据起始日期
+    engine.setEndDate('date_e')                   # 设置回测用的数据起始日期
 
     # 配置回测引擎参数
     engine.setSlippage(1)
