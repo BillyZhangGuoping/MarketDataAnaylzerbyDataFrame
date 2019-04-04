@@ -43,14 +43,17 @@ def parameter_generate():
 
     return parameter_list
 
-def object_func(strategy_avg, seed = 0):
+def object_func(strategy_avg):
     """
     本函数为优化目标函数，根据随机生成的策略参数，运行回测后自动返回2个结果指标：收益回撤比和夏普比率
     """
 
+    strategy_avg = strategy_avg[0]
+    seed = strategy_avg[1]
+
     import time, random
-    a1 = (2018, 2, 8, 0, 0, 0, 0, 0, 0)  # 设置开始日期时间元组（1976-01-01 00：00：00）
-    a2 = (2018, 9, 15, 23, 59, 59, 0, 0, 0)  # 设置结束日期时间元组（1990-12-31 23：59：59）
+    a1 = (2018, 5, 30, 0, 0, 0, 0, 0, 0)  # 设置开始日期时间元组（1976-01-01 00：00：00）
+    a2 = (2019, 1, 15, 23, 59, 59, 0, 0, 0)  # 设置结束日期时间元组（1990-12-31 23：59：59）
 
     start = time.mktime(a1)  # 生成开始时间戳
     end = time.mktime(a2)  # 生成结束时间戳
@@ -66,9 +69,9 @@ def object_func(strategy_avg, seed = 0):
     engine = BacktestingEngine()
     # 设置回测使用的数据
     engine.setBacktestingMode(engine.BAR_MODE)      # 设置引擎的回测模式为K线
-    engine.setDatabase("VnTrader_1Min_Db", 'rb1901')  # 设置使用的历史数据库
-    engine.setStartDate('date_s')                 # 设置回测用的数据起始日期
-    engine.setEndDate('date_e')                   # 设置回测用的数据起始日期
+    engine.setDatabase("VnTrader_1Min_Db", 'rb1905')  # 设置使用的历史数据库
+    engine.setStartDate(date_s)                 # 设置回测用的数据起始日期
+    engine.setEndDate(date_e)                   # 设置回测用的数据起始日期
 
     # 配置回测引擎参数
     engine.setSlippage(1)
@@ -96,7 +99,7 @@ def object_func(strategy_avg, seed = 0):
     engine.calculateDailyResult()
     backresult = engine.calculateBacktestingResult()
     try:
-        # profitLossRatio = round(backresult['profitLossRatio'], 3) #收益回撤比
+        capital = round(backresult['capital'], 3) #收益回撤比
         profitLossRatio = round(backresult['profitLossRatio'],3)                   #夏普比率                 #夏普比率
         sharpeRatio= round(backresult['sharpeRatio'],3)
     except:
@@ -105,10 +108,10 @@ def object_func(strategy_avg, seed = 0):
         profitLossRatio = 0                      #收益回撤比
         averageWinning= 0                  #夏普比率                 #夏普比率
         capital= 0
-    return sharpeRatio,profitLossRatio
+    return capital, sharpeRatio,profitLossRatio
 
 # 设置优化方向：最大化收益回撤比，最大化夏普比率
-creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
+creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0,1.0))  # 1.0 求最大值；-1.0 求最小值
 creator.create("Individual", list, fitness=creator.FitnessMulti)
 
 def mutArrayGroup(individual,parameterlist, indpb):
@@ -136,10 +139,10 @@ def optimize():
     toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
     # 遗传算法参数设置
-    MU = 500  # 设置每一代选择的个体数
+    MU = 800  # 设置每一代选择的个体数
     LAMBDA = 500 # 设置每一代产生的子女数
     pop = toolbox.population(1500)  # 设置族群里面的个体数量
-    CXPB, MUTPB, NGEN = 0.5, 0.3, 150  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+    CXPB, MUTPB, NGEN = 0.5, 0.3, 160  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
     hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
     # 解的集合的描述统计信息
@@ -152,7 +155,7 @@ def optimize():
     stats.register("min", np.min, axis=0)  # 统计目标优化函数结果的最小值
     stats.register("max", np.max, axis=0)  # 统计目标优化函数结果的最大值
     # 运行算法
-    algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
+    algorithms.eaMuPlusLambdv2(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
                               halloffame=hof,verbose=True)  # esMuPlusLambda是一种基于(μ+λ)选择策略的多目标优化分段遗传算法
 
     return pop
