@@ -97,6 +97,7 @@ def object_func(strategy_avg):
     engine.runBacktesting()          # 运行回测
     #逐日回测
     engine.calculateDailyResult()
+    
     backresult = engine.calculateBacktestingResult()
     try:
         capital = round(backresult['capital'], 3) #收益回撤比
