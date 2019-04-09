@@ -192,7 +192,7 @@ class GeneticOptimizeStrategy(object):
     def poptoExcel(self, pop, number = 1000, path = "C:/data/"):
         #按照输入统计数据队列和路径，输出excel，这里不提供新增模式，如果想，可以改
         #dft.to_csv(path,index=False,header=True, mode = 'a')
-        path = path + self.Symbollist[ "vtSymbol"] + BBIBoll2VStrategy.className + ".xls"
+        path = path +  BBIBoll2VStrategy.className + "_" + self.symbol[ "vtSymbol"] + ".xls"
         summayKey = ["StrategyParameter","TestValues"]
         best_ind = tools.selBest(pop, number)
         dft = pd.DataFrame(columns=summayKey)
@@ -214,7 +214,7 @@ class GeneticOptimizeStrategy(object):
         strReturn = "{ "
         i = 0
         for key, value in self.parameterlist.items():
-            str = str + key + ": "+ str(individual[i]) + ","
+            str = strReturn + key + ": "+ str(individual[i]) + ","
             i = i+1
         strReturn = strReturn + " }"
         return strReturn
