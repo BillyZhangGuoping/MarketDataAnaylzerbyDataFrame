@@ -35,7 +35,10 @@ class GeneticOptimizeStrategy(object):
         parameter_list = []
         for key, value in self.parameterlist.items():
             if isinstance(value, tuple):
-                parameter_list.append(random.randrange(value[0], value[1], value[2]))
+                if len(value) == 3:
+                    parameter_list.append(random.randrange(value[0], value[1], value[2]))
+                elif len(value) == 2:
+                    parameter_list.append(random.uniform(value[0], value[1]))
             elif isinstance(value, list):
                 parameter_list.append(random.choice(value))
             else:
@@ -171,7 +174,7 @@ class GeneticOptimizeStrategy(object):
         MU = 8  # 设置每一代选择的个体数
         LAMBDA = 5  # 设置每一代产生的子女数
         pop = toolbox.population(20)  # 设置族群里面的个体数量
-        CXPB, MUTPB, NGEN = 0.5, 0.3, 10  # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+        CXPB, MUTPB, NGEN = 0.5, 0.3, 4 # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
         hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
         # 解的集合的描述统计信息
@@ -192,20 +195,20 @@ class GeneticOptimizeStrategy(object):
     def poptoExcel(self, pop, number = 1000, path = "C:/data/"):
         #按照输入统计数据队列和路径，输出excel，这里不提供新增模式，如果想，可以改
         #dft.to_csv(path,index=False,header=True, mode = 'a')
-        path = path +  BBIBoll2VStrategy.className + "_" + self.symbol[ "vtSymbol"] + ".xls"
+        path = path +  BBIBoll2VStrategy.className + "_" + self.symbol[ "vtSymbol"] + str(datetime.date.today())+ ".xls"
         summayKey = ["StrategyParameter","TestValues"]
         best_ind = tools.selBest(pop, number)
         dft = pd.DataFrame(columns=summayKey)
 
         for i in range(0,len(best_ind)-1):
             if i == 0:
-                new = pd.DataFrame({"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}, index=["0"])
-                dft = dft.append(new, ignore_index=True)
+                # new = pd.DataFrame([{"StrategyParameter":self.complieString(best_ind[i])},{"TestValues":best_ind[i].fitness.values}], index=["0"])
+                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
             elif str(best_ind[i-1]) == (str(best_ind[i])):
                 pass
             else:
-                new = pd.DataFrame({"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}, index=["0"])
-                dft = dft.append(new, ignore_index=True)
+                #new = pd.DataFrame({"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}, index=["0"])
+                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
 
         dft.to_excel(path,index=False,header=True)
         print("回测统计结果输出到" + path)
@@ -214,7 +217,7 @@ class GeneticOptimizeStrategy(object):
         strReturn = "{ "
         i = 0
         for key, value in self.parameterlist.items():
-            str = strReturn + key + ": "+ str(individual[i]) + ","
+            strReturn = strReturn + key + ": "+ str(individual[i]) + ","
             i = i+1
         strReturn = strReturn + " }"
         return strReturn
@@ -237,9 +240,9 @@ if __name__ == "__main__":
                     'bollDev': (2,10,1),        #布林带通道阈值
                     'bbibollWindow':(10,50,1),
                     'bbibollDev':(2,10,1),
-                    'slMultiplier':(3,6,1),
-                    'profitRate':[0.0001,0.0003,0.0005],
-                    'barMins':[3,5,10,15,20],
+                    'slMultiplier':(3,6),
+                    'profitRate':(0.0001,0.0010),
+                    'barMins':[2,3,5,10,15,20],
                     'endsize':(0,5,1),
 
     }
