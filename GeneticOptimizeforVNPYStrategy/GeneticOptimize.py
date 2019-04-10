@@ -9,6 +9,7 @@ from __future__ import print_function
 from vnpy.trader.app.ctaStrategy.ctaBacktesting import BacktestingEngine, MINUTE_DB_NAME, OptimizationSetting
 from vnpy.trader.app.ctaStrategy.strategy.strategyBBIBoll2V import BBIBoll2VStrategy
 from vnpy.trader.app.ctaStrategy.strategy.strategyBollChannel import BollChannelStrategy
+from vnpy.trader.app.ctaStrategy.strategy.strategyHCLBOLL import HCLBOLLStrategy
 import random
 import numpy as np
 from deap import creator, base, tools, algorithms
@@ -44,26 +45,7 @@ class GeneticOptimizeStrategy(object):
             else:
                 parameter_list.append(value)
 
-        # parameter_list = []
-        # timerange = [2,3,5,10,15,20]
 
-        # p1 = random.randrange(10,55,1)      #入场窗口
-        # p2 = random.randrange(1,15,1)      #出场窗口
-        # p3 = random.randrange(20,55,1)      #基于ATR窗口止损窗
-        # p4 = random.randrange(1,12,1)      #出场窗口
-        # p5 = random.randrange(20,70,1)     #基于ATR的动态调仓
-        # p6 = random.randrange(1,30,1)
-        # p7 = random.choice(timerange)
-        # p8 = random.randrange(0,5,1)
-
-        # parameter_list.append(p1)
-        # parameter_list.append(p2)
-        # parameter_list.append(p3)
-        # parameter_list.append(p4)
-        # parameter_list.append(p5/10.0)
-        # parameter_list.append(p6/1000.0)
-        # parameter_list.append(p7)
-        # parameter_list.append(p8)
 
         return parameter_list
 
@@ -71,23 +53,8 @@ class GeneticOptimizeStrategy(object):
         """
         本函数为优化目标函数，根据随机生成的策略参数，运行回测后自动返回2个结果指标：收益回撤比和夏普比率
         """
-
         strategy_avg = strategy_avgTuple
-        # seed = strategy_avgTuple[1]
 
-        # import time, random
-        # a1 = (2018, 5, 30, 0, 0, 0, 0, 0, 0)  # 设置开始日期时间元组（1976-01-01 00：00：00）
-        # a2 = (2019, 1, 15, 23, 59, 59, 0, 0, 0)  # 设置结束日期时间元组（1990-12-31 23：59：59）
-
-        # start = time.mktime(a1)  # 生成开始时间戳
-        # end = time.mktime(a2)  # 生成结束时间戳
-        # random.seed(seed)
-        # t1 = random.randint(start, end)  # 在开始和结束时间戳中随机取出一个
-        # t2 = (t1 + 10000000)  # 将时间戳生成时间元组
-        # date_touple1 = time.localtime(t1)  # 将时间戳生成时间元组
-        # date_touple2 = time.localtime(t2)  # 将时间戳生成时间元组
-        # date_s = time.strftime("%Y%m%d", date_touple1)  # 将时间元组转成格式化字符串（1976-05-21）
-        # date_e = time.strftime("%Y%m%d", date_touple2)
 
         # 创建回测引擎对象
         engine = BacktestingEngine()
@@ -104,16 +71,6 @@ class GeneticOptimizeStrategy(object):
         engine.setPriceTick(self.symbol["Slippage"])  # 最小价格变动
         engine.setCapital(self.symbol["Capital"])
 
-        # setting = {
-        #             'bollWindow': strategy_avg[0],       #布林带窗口
-        #             'bollDev': strategy_avg[1],        #布林带通道阈值
-        #             'bbibollWindow':strategy_avg[2],
-        #             'bbibollDev':strategy_avg[3],
-        #             'slMultiplier':strategy_avg[4],
-        #             'profitRate':strategy_avg[5],
-        #             'barMins':strategy_avg[6],
-        #             'endsize':strategy_avg[7],
-        #         }    #ATR窗口
         setting = {}
         i = 0
         for key, value in self.parameterlist.items():
@@ -156,9 +113,9 @@ class GeneticOptimizeStrategy(object):
         creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
         creator.create("Individual", list, fitness=creator.FitnessMulti)
         toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
-        # pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count() - 2))
-        # toolbox.register("map", pool.map)
-        # toolbox.register("map", futures.map)
+        pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count() - 1))
+        toolbox.register("map", pool.map)
+
         # 初始化
         toolbox.register("individual", tools.initIterate, creator.Individual,
                          self.parameter_generate)  # 注册个体：随机生成的策略参数parameter_generate()
@@ -166,15 +123,15 @@ class GeneticOptimizeStrategy(object):
                          toolbox.individual)  # 注册种群：个体形成种群
         toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
         toolbox.register("mutate", self.mutArrayGroup, parameterlist=self.parameter_generate,
-                         indpb=0.6)  # 注册变异：随机生成一定区间内的整数
+                         indpb=0.3)  # 注册变异：随机生成一定区间内的整数
         toolbox.register("evaluate", self.object_func)  # 注册评估：优化目标函数object_func()
         toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
         # 遗传算法参数设置
-        MU = 8  # 设置每一代选择的个体数
-        LAMBDA = 5  # 设置每一代产生的子女数
-        pop = toolbox.population(20)  # 设置族群里面的个体数量
-        CXPB, MUTPB, NGEN = 0.5, 0.3, 4 # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+        MU = 800  # 设置每一代选择的个体数
+        LAMBDA = 500 # 设置每一代产生的子女数
+        pop = toolbox.population(2000)  # 设置族群里面的个体数量
+        CXPB, MUTPB, NGEN = 0.5, 0.3, 120 # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
         hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
         # 解的集合的描述统计信息
@@ -202,12 +159,10 @@ class GeneticOptimizeStrategy(object):
 
         for i in range(0,len(best_ind)-1):
             if i == 0:
-                # new = pd.DataFrame([{"StrategyParameter":self.complieString(best_ind[i])},{"TestValues":best_ind[i].fitness.values}], index=["0"])
-                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
+                 dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
             elif str(best_ind[i-1]) == (str(best_ind[i])):
                 pass
             else:
-                #new = pd.DataFrame({"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}, index=["0"])
                 dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
 
         dft.to_excel(path,index=False,header=True)
@@ -225,8 +180,37 @@ class GeneticOptimizeStrategy(object):
 
 
 if __name__ == "__main__":
+    Strategy = HCLBOLLStrategy
     Strategy = BBIBoll2VStrategy
-    Symbollist ={
+    SymbolList =[
+                    {
+                        "vtSymbol": 'rb1901',
+                        "StartDate": "20180601",
+                        "EndDate": "20181101",
+                        "Slippage": 1,
+                        "Size": 10,
+                        "Rate": 2 / 10000,
+                        "Capital": 10000
+                    },
+                    {
+                        "vtSymbol": 'SR901',
+                        "StartDate": "20180601",
+                        "EndDate": "20181101",
+                        "Slippage": 1,
+                        "Size": 10,
+                        "Rate": 2 / 10000,
+                        "Capital": 15000
+                    },
+                    {
+                        "vtSymbol": 'bu1812',
+                        "StartDate": "20180601",
+                        "EndDate": "20181101",
+                        "Slippage": 2,
+                        "Size": 10,
+                        "Rate": 2 / 10000,
+                        "Capital": 15000
+                    },
+                    {
                     "vtSymbol": 'm1901',
                     "StartDate": "20180601",
                     "EndDate": "20181101",
@@ -234,28 +218,24 @@ if __name__ == "__main__":
                     "Size": 10,
                     "Rate": 2 / 10000,
                     "Capital": 10000
-                    }
+                    }]
     Parameterlist = {
-                    'bollWindow': (10,50,1),       #布林带窗口
-                    'bollDev': (2,10,1),        #布林带通道阈值
-                    'bbibollWindow':(10,50,1),
-                    'bbibollDev':(2,10,1),
-                    'slMultiplier':(3,6),
-                    'profitRate':(0.0001,0.0010),
-                    'barMins':[2,3,5,10,15,20],
-                    'endsize':(0,5,1),
-
-    }
-    GE = GeneticOptimizeStrategy(Strategy,Symbollist,Parameterlist)
-    GE.poptoExcel(GE.optimize())
-
-    print("-- End of (successful) evolution --")
-
-
-
-
-    # strategy_avg1 = parameter_generate()
-    #
-    # print(strategy_avg1)
-    # return1, return2 =object_func( strategy_avg1)
-    # print(return1, return2)
+                    'atrWindow': (10,30,1),  # ATR窗口数
+                    'barMins': [2,3,5,10,15,20,25],
+                    'shortBarMins': [2,3,5,10,15,20,25],
+                    'slMultiplier': (3.0,6.0),  # 计算止损距离的乘数
+                    'profitRate': (0.0002,0.0010),
+                    'CloseWindow': (10,50,2),
+                    'ShortWindow': (10,50,2),
+                    'bollWindow': (10,50,2),
+                    'bollDev': (5,10),
+                    'endsize': (0,5,1),
+                    'endplus': (0,5,1),
+                    'barsize': (0,5,1),
+                    'barplus': (0,5,1)
+                    }
+    for Symbol in SymbolList:
+        GE = GeneticOptimizeStrategy(Strategy,Symbol,Parameterlist)
+        GE.poptoExcel(GE.optimize())
+        del GE
+        print("-- End of (successful) %s evolution --",Symbol["vtSymbol"] )
