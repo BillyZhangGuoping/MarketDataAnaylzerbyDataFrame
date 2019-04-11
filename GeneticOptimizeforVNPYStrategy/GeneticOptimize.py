@@ -14,6 +14,7 @@ import random
 import numpy as np
 from deap import creator, base, tools, algorithms
 import multiprocessing
+
 import time, datetime
 import pandas as pd
 
@@ -37,16 +38,13 @@ class GeneticOptimizeStrategy(object):
         for key, value in self.parameterlist.items():
             if isinstance(value, tuple):
                 if len(value) == 3:
-                    parameter_list.append(random.randrange(value[0], value[1], value[2]))
+                    parameter_list.append({key:random.randrange(value[0], value[1], value[2])})
                 elif len(value) == 2:
-                    parameter_list.append(random.uniform(value[0], value[1]))
+                    parameter_list.append({key:random.uniform(value[0], value[1])})
             elif isinstance(value, list):
-                parameter_list.append(random.choice(value))
+                parameter_list.append({key:random.choice(value)})
             else:
-                parameter_list.append(value)
-
-
-
+                parameter_list.append({key:value})
         return parameter_list
 
     def object_func(self, strategy_avgTuple):
@@ -72,10 +70,9 @@ class GeneticOptimizeStrategy(object):
         engine.setCapital(self.symbol["Capital"])
 
         setting = {}
-        i = 0
-        for key, value in self.parameterlist.items():
-            setting[key] = strategy_avg[i]
-            i = i + 1
+
+        for item in range(len(strategy_avg)):
+            setting.update(strategy_avg[item])
 
         engine.clearBacktestingResult()
         # 加载策略
@@ -84,8 +81,7 @@ class GeneticOptimizeStrategy(object):
         # 运行回测，返回指定的结果指标
         engine.runBacktesting()  # 运行回测
         # 逐日回测
-        engine.calculateDailyResult()
-
+        # engine.calculateDailyResult()
         backresult = engine.calculateBacktestingResult()
         try:
             capital = round(backresult['capital'], 3)  # 收益回撤比
@@ -108,14 +104,15 @@ class GeneticOptimizeStrategy(object):
 
         return individual,
 
+    creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
+    creator.create("Individual", list, fitness=creator.FitnessMulti)
+
     def optimize(self):
         # 设置优化方向：最大化收益回撤比，最大化夏普比率
-        creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
-        creator.create("Individual", list, fitness=creator.FitnessMulti)
         toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
         pool = multiprocessing.Pool(processes=(multiprocessing.cpu_count() - 1))
         toolbox.register("map", pool.map)
-
+        # toolbox.register("map", futures.map)
         # 初始化
         toolbox.register("individual", tools.initIterate, creator.Individual,
                          self.parameter_generate)  # 注册个体：随机生成的策略参数parameter_generate()
@@ -123,15 +120,15 @@ class GeneticOptimizeStrategy(object):
                          toolbox.individual)  # 注册种群：个体形成种群
         toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
         toolbox.register("mutate", self.mutArrayGroup, parameterlist=self.parameter_generate,
-                         indpb=0.3)  # 注册变异：随机生成一定区间内的整数
+                         indpb=0.6)  # 注册变异：随机生成一定区间内的整数
         toolbox.register("evaluate", self.object_func)  # 注册评估：优化目标函数object_func()
         toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
 
         # 遗传算法参数设置
-        MU = 800  # 设置每一代选择的个体数
-        LAMBDA = 500 # 设置每一代产生的子女数
-        pop = toolbox.population(2000)  # 设置族群里面的个体数量
-        CXPB, MUTPB, NGEN = 0.5, 0.3, 120 # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
+        MU = 3  # 设置每一代选择的个体数
+        LAMBDA = 3  # 设置每一代产生的子女数
+        pop = toolbox.population(10)  # 设置族群里面的个体数量
+        CXPB, MUTPB, NGEN = 0.5, 0.3, 10 # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
         hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
 
         # 解的集合的描述统计信息
@@ -159,6 +156,28 @@ class GeneticOptimizeStrategy(object):
 
         for i in range(0,len(best_ind)-1):
             if i == 0:
+                # new = pd.DataFrame([{"StrategyParameter":self.complieString(best_ind[i])},{"TestValues":best_ind[i].fitness.values}], index=["0"])
+                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
+            elif str(best_ind[i-1]) == (str(best_ind[i])):
+                pass
+            else:
+                #new = pd.DataFrame({"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}, index=["0"])
+                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
+
+        dft.to_excel(path,index=False,header=True)
+        print("回测统计结果输出到" + path)
+
+
+    def poptoExcel(self, pop, number = 1000, path = "C:/Users/shui0/OneDrive/Documents/Optimization/"):
+        #按照输入统计数据队列和路径，输出excel，这里不提供新增模式，如果想，可以改
+        #dft.to_csv(path,index=False,header=True, mode = 'a')
+        path = path +  BBIBoll2VStrategy.className + "_" + self.symbol[ "vtSymbol"] + str(datetime.date.today())+ ".xls"
+        summayKey = ["StrategyParameter","TestValues"]
+        best_ind = tools.selBest(pop, number)
+        dft = pd.DataFrame(columns=summayKey)
+
+        for i in range(0,len(best_ind)-1):
+            if i == 0:
                  dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
             elif str(best_ind[i-1]) == (str(best_ind[i])):
                 pass
@@ -172,44 +191,43 @@ class GeneticOptimizeStrategy(object):
         strReturn = "{ "
         i = 0
         for key, value in self.parameterlist.items():
-            strReturn = strReturn + key + ": "+ str(individual[i]) + ","
+            strReturn = strReturn + key + ": "+ str(individual[i]) + ", "
             i = i+1
         strReturn = strReturn + " }"
         return strReturn
 
 
-
 if __name__ == "__main__":
     Strategy = HCLBOLLStrategy
-    Strategy = BBIBoll2VStrategy
+
     SymbolList =[
-                    {
-                        "vtSymbol": 'rb1901',
-                        "StartDate": "20180601",
-                        "EndDate": "20181101",
-                        "Slippage": 1,
-                        "Size": 10,
-                        "Rate": 2 / 10000,
-                        "Capital": 10000
-                    },
-                    {
-                        "vtSymbol": 'SR901',
-                        "StartDate": "20180601",
-                        "EndDate": "20181101",
-                        "Slippage": 1,
-                        "Size": 10,
-                        "Rate": 2 / 10000,
-                        "Capital": 15000
-                    },
-                    {
-                        "vtSymbol": 'bu1812',
-                        "StartDate": "20180601",
-                        "EndDate": "20181101",
-                        "Slippage": 2,
-                        "Size": 10,
-                        "Rate": 2 / 10000,
-                        "Capital": 15000
-                    },
+                    # {
+                    #     "vtSymbol": 'rb1901',
+                    #     "StartDate": "20180601",
+                    #     "EndDate": "20181101",
+                    #     "Slippage": 1,
+                    #     "Size": 10,
+                    #     "Rate": 2 / 10000,
+                    #     "Capital": 10000
+                    # },
+                    # {
+                    #     "vtSymbol": 'SR901',
+                    #     "StartDate": "20180601",
+                    #     "EndDate": "20181101",
+                    #     "Slippage": 1,
+                    #     "Size": 10,
+                    #     "Rate": 2 / 10000,
+                    #     "Capital": 15000
+                    # },
+                    # {
+                    #     "vtSymbol": 'bu1812',
+                    #     "StartDate": "20180601",
+                    #     "EndDate": "20181101",
+                    #     "Slippage": 2,
+                    #     "Size": 10,
+                    #     "Rate": 2 / 10000,
+                    #     "Capital": 15000
+                    # },
                     {
                     "vtSymbol": 'm1901',
                     "StartDate": "20180601",
@@ -235,7 +253,8 @@ if __name__ == "__main__":
                     'barplus': (0,5,1)
                     }
     for Symbol in SymbolList:
-        GE = GeneticOptimizeStrategy(Strategy,Symbol,Parameterlist)
-        GE.poptoExcel(GE.optimize())
-        del GE
-        print("-- End of (successful) %s evolution --",Symbol["vtSymbol"] )
+        GEx = GeneticOptimizeStrategy(Strategy,Symbol,Parameterlist)
+        GEx.poptoExcel(GEx.optimize())
+
+
+
