@@ -9,12 +9,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
-              <caret line="131" column="45" lean-forward="true" selection-start-line="131" selection-start-column="45" selection-end-line="131" selection-end-column="45" />
+            <state relative-caret-position="-2208">
+              <caret line="70" lean-forward="true" selection-start-line="70" selection-end-line="70" />
               <folding>
                 <element signature="e#40#71#0" expanded="true" />
               </folding>
@@ -23,49 +23,46 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/mutation.py">
+        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/init.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="149" selection-start-line="149" selection-end-line="163" selection-end-column="22" />
+            <state relative-caret-position="235">
+              <caret line="24" column="36" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="36" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/multiprocessing/pool.py">
+        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/creator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="153" selection-start-line="153" selection-end-line="153" />
+            <state relative-caret-position="533">
+              <caret line="122" column="29" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="29" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/multiprocessing/__init__.py">
+        <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-442534463/__builtin__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="231" selection-start-line="231" selection-end-line="231" />
+            <state relative-caret-position="82">
+              <caret line="3356" column="6" selection-start-line="3356" selection-start-column="6" selection-end-line="3356" selection-end-column="6" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/ctaBacktesting.py">
+        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBollChannel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="403">
-              <caret line="991" selection-start-line="991" selection-end-line="991" />
-              <folding>
-                <element signature="e#82#113#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="249">
+              <caret line="230" lean-forward="true" selection-start-line="230" selection-end-line="230" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/ctaTemplate.py">
+        <entry file="file://$PROJECT_DIR$/checkMutiple.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="74" selection-start-line="7" selection-start-column="74" selection-end-line="7" selection-end-column="74" />
+            <state relative-caret-position="204">
+              <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -73,17 +70,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="96" selection-start-line="96" selection-end-line="96" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtObject.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="110" column="26" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="26" />
+            <state relative-caret-position="261">
+              <caret line="198" column="40" selection-start-line="198" selection-start-column="39" selection-end-line="198" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -91,13 +79,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="365" column="42" selection-start-line="365" selection-start-column="42" selection-end-line="365" selection-end-column="42" />
+            <state relative-caret-position="2110">
+              <caret line="345" column="83" lean-forward="true" selection-start-line="345" selection-start-column="83" selection-end-line="345" selection-end-column="83" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>creator</find>
+      <find>parameterlist</find>
+      <find>evaluate</find>
+      <find>object_func</find>
+      <find>mid</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -109,21 +113,26 @@
         <option value="C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py" />
         <option value="C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py" />
         <option value="C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/ctaBacktesting.py" />
+        <option value="C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBollChannel.py" />
+        <option value="$PROJECT_DIR$/checkMutiple.py" />
+        <option value="$PROJECT_DIR$/MultiTest.py" />
+        <option value="C:/ProgramData/Anaconda2/Lib/site-packages/deap/algorithms.py" />
         <option value="$PROJECT_DIR$/GeneticOptimize.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="605" />
-    <option name="y" value="98" />
-    <option name="width" value="1616" />
-    <option name="height" value="876" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="923" />
+    <option name="y" value="82" />
+    <option name="width" value="1612" />
+    <option name="height" value="865" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -135,7 +144,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -175,6 +183,69 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="MultiTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GeneticOptimizeforVNPYStrategy" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MultiTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="algorithms" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GeneticOptimizeforVNPYStrategy" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="C:/ProgramData/Anaconda2/Lib/site-packages/deap" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:/ProgramData/Anaconda2/Lib/site-packages/deap/algorithms.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="checkMutiple" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GeneticOptimizeforVNPYStrategy" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/checkMutiple.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="ctaTemplate" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="GeneticOptimizeforVNPYStrategy" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -196,9 +267,19 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.checkMutiple" />
+      <item itemvalue="Python.ctaTemplate" />
+      <item itemvalue="Python.GeneticOptimize" />
+      <item itemvalue="Python.MultiTest" />
+      <item itemvalue="Python.algorithms" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.GeneticOptimize" />
+        <item itemvalue="Python.algorithms" />
+        <item itemvalue="Python.MultiTest" />
+        <item itemvalue="Python.checkMutiple" />
         <item itemvalue="Python.ctaTemplate" />
       </list>
     </recent_temporary>
@@ -216,23 +297,33 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24973656" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49658936" visible="true" weight="0.24973656" />
+      <window_info id="Structure" order="1" sideWeight="0.50341064" side_tool="true" visible="true" weight="0.24973656" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32981783" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39980826" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.29721954" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.20997123" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32981783" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32981783" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -240,23 +331,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py</url>
-          <line>96</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py</url>
-          <line>93</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py</url>
-          <line>238</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -267,10 +341,24 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtObject.py">
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/mutation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="110" column="26" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="26" />
+        <state relative-caret-position="2448">
+          <caret line="149" selection-start-line="149" selection-end-line="163" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/pathos/multiprocessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2278">
+          <caret line="136" selection-start-line="136" selection-end-line="136" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/multiprocess/pool.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9588">
+          <caret line="571" selection-start-line="571" selection-end-line="571" />
         </state>
       </provider>
     </entry>
@@ -281,55 +369,148 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py">
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-442534463/time.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="96" selection-start-line="96" selection-end-line="96" />
+        <state relative-caret-position="257">
+          <caret line="121" column="4" selection-start-line="121" selection-start-column="4" selection-end-line="121" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2/multiprocessing/__init__.pyi">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="365" column="42" selection-start-line="365" selection-start-column="42" selection-end-line="365" selection-end-column="42" />
+        <state relative-caret-position="185">
+          <caret line="39" column="8" lean-forward="true" selection-start-line="39" selection-start-column="8" selection-end-line="39" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons/multiprocessing/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="238" column="8" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/multiprocessing/pool.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="153" selection-start-line="153" selection-end-line="153" />
+        <state relative-caret-position="258">
+          <caret line="459" column="8" selection-start-line="459" selection-start-column="8" selection-end-line="459" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/multiprocessing/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
+        <state relative-caret-position="235">
           <caret line="231" selection-start-line="231" selection-end-line="231" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MultiTest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtObject.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1326">
+          <caret line="84" column="48" selection-start-line="84" selection-start-column="48" selection-end-line="84" selection-end-column="48" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/ctaBacktesting.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
-          <caret line="991" selection-start-line="991" selection-end-line="991" />
+        <state relative-caret-position="703">
+          <caret line="1402" column="46" selection-start-line="1402" selection-start-column="39" selection-end-line="1402" selection-end-column="46" />
           <folding>
             <element signature="e#82#113#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/mutation.py">
+    <entry file="file://$PROJECT_DIR$/GeneticOptimizev2.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkMutiple.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="149" selection-start-line="149" selection-end-line="163" selection-end-column="22" />
+        <state relative-caret-position="204">
+          <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="198" column="40" selection-start-line="198" selection-start-column="39" selection-end-line="198" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2110">
+          <caret line="345" column="83" lean-forward="true" selection-start-line="345" selection-start-column="83" selection-end-line="345" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-442534463/__builtin__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="82">
+          <caret line="3356" column="6" selection-start-line="3356" selection-start-column="6" selection-end-line="3356" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/multiprocessing/process.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="266" selection-start-line="266" selection-end-line="266" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="47" column="8" selection-start-line="47" selection-start-column="8" selection-end-line="47" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/creator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="533">
+          <caret line="122" column="29" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="24" column="36" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/algorithms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="249" column="4" selection-start-line="249" selection-start-column="4" selection-end-line="249" selection-end-column="4" />
+          <folding>
+            <element signature="e#1319#1332#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBollChannel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="230" lean-forward="true" selection-start-line="230" selection-end-line="230" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="131" column="45" lean-forward="true" selection-start-line="131" selection-start-column="45" selection-end-line="131" selection-end-column="45" />
+        <state relative-caret-position="-2208">
+          <caret line="70" lean-forward="true" selection-start-line="70" selection-end-line="70" />
           <folding>
             <element signature="e#40#71#0" expanded="true" />
           </folding>
