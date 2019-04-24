@@ -1,265 +1,262 @@
 # encoding: UTF-8
-
-"""
-展示如何执行参数优化。
-"""
-
-from __future__ import division
-from __future__ import print_function
-from vnpy.trader.app.ctaStrategy.ctaBacktesting import BacktestingEngine, MINUTE_DB_NAME, OptimizationSetting
-from vnpy.trader.app.ctaStrategy.strategy.strategyBBIBoll2V import BBIBoll2VStrategy
-from vnpy.trader.app.ctaStrategy.strategy.strategyBollChannel import BollChannelStrategy
-from vnpy.trader.app.ctaStrategy.strategy.strategyHCLBOLL import HCLBOLLStrategy
-import random
-import numpy as np
-from deap import creator, base, tools, algorithms
-import multiprocessing
-from multiprocessing.pool import ThreadPool as Pool
-
-import time, datetime
+from pymongo import MongoClient, ASCENDING
 import pandas as pd
+import numpy as np
+from datetime import datetime
+import talib
+import matplotlib.pyplot as plt
+import scipy.stats as scs
 
-class GeneticOptimizeStrategy(object):
-    strategy = None
-    symbol = {}
-    parameterlist = {}
+class DataAnalyzer(object):
+    def __init__(self, exportpath="C:\Project\\", datformat=['datetime', 'high', 'low', 'open', 'close','volume']):
+        self.mongohost = None
+        self.mongoport = None
+        self.db = None
+        self.collection = None
+        self.df = pd.DataFrame()
+        self.exportpath = exportpath
+        self.datformat = datformat
 
-    # ------------------------------------------------------------------------
-    def __init__(self, Strategy, Symbollist, Parameterlist):
-        self.strategy = Strategy
-        self.symbol = Symbollist
-        self.parameterlist = Parameterlist
+    def db2df(self, db, collection, start, end, mongohost="localhost", mongoport=27017, export2csv=False):
+        """读取MongoDB数据库行情记录，输出到Dataframe中"""
+        self.mongohost = mongohost
+        self.mongoport = mongoport
+        self.db = db
+        self.collection = collection
+        dbClient = MongoClient(self.mongohost, self.mongoport, connectTimeoutMS=500)
+        db = dbClient[self.db]
+        cursor = db[self.collection].find({'datetime':{'$gte':start, '$lt':end}}).sort("datetime",ASCENDING)
+        self.df = pd.DataFrame(list(cursor))
+        self.df = self.df[self.datformat]
+        self.df = self.df.reset_index(drop=True)
+        path = self.exportpath + self.collection + ".csv"
+        if export2csv == True:
+            self.df.to_csv(path, index=True, header=True)
+        return self.df
 
-    # ------------------------------------------------------------------------
-    def parameter_generate(self):
-        '''
-        根据设置的起始值，终止值和步进，随机生成待优化的策略参数
-        '''
-        parameter_list = []
-        for key, value in self.parameterlist.items():
-            if isinstance(value, tuple):
-                if len(value) == 3:
-                    parameter_list.append(random.randrange(value[0], value[1], value[2]))
-                elif len(value) == 2:
-                    parameter_list.append(random.uniform(value[0], value[1]))
-            elif isinstance(value, list):
-                parameter_list.append(random.choice(value))
+    def csv2df(self, csvpath, dataname="csv_data", export2csv=False):
+        """读取csv行情数据，输入到Dataframe中"""
+        csv_df = pd.read_csv(csvpath)
+        self.df = csv_df[self.datformat]
+        self.df["datetime"] = pd.to_datetime(self.df['datetime'])
+        # self.df["high"] = self.df['high'].astype(float)
+        # self.df["low"] = self.df['low'].astype(float)
+        # self.df["open"] = self.df['open'].astype(float)
+        # self.df["close"] = self.df['close'].astype(float)
+        # self.df["volume"] = self.df['volume'].astype(int)
+        self.df = self.df.reset_index(drop=True)
+        path = self.exportpath + dataname + ".csv"
+        if export2csv == True:
+            self.df.to_csv(path, index=True, header=True)
+        return self.df
+
+    def df2Barmin(self, inputdf, barmins, crossmin=1, export2csv=False):
+        """输入分钟k线dataframe数据，合并多多种数据，例如三分钟/5分钟等，如果开始时间是9点1分，crossmin = 0；如果是9点0分，crossmin为1"""
+        dfbarmin = pd.DataFrame()
+        highBarMin = 0
+        lowBarMin = 0
+        openBarMin = 0
+        volumeBarmin = 0
+        datetime = 0
+        for i in range(0, len(inputdf) - 1):
+            bar = inputdf.iloc[i, :].to_dict()
+            if openBarMin == 0:
+                openBarmin = bar["open"]
+            if highBarMin == 0:
+                highBarMin = bar["high"]
             else:
-                parameter_list.append(value)
+                highBarMin = max(bar["high"], highBarMin)
 
+            if lowBarMin == 0:
+                lowBarMin = bar["low"]
+            else:
+                lowBarMin = min(bar["low"], lowBarMin)
+            closeBarMin = bar["close"]
+            datetime = bar["datetime"]
+            volumeBarmin += int(bar["volume"])
+            # X分钟已经走完
+            if not (bar["datetime"].minute + crossmin) % barmins:  # 可以用X整除
+                # 生成上一X分钟K线的时间戳
+                barMin = {'datetime': datetime, 'high': highBarMin, 'low': lowBarMin, 'open': openBarmin,
+                          'close': closeBarMin, 'volume' : volumeBarmin}
+                dfbarmin = dfbarmin.append(barMin, ignore_index=True)
+                highBarMin = 0
+                lowBarMin = 0
+                openBarMin = 0
+                volumeBarmin = 0
+        if export2csv == True:
+            dfbarmin.to_csv(self.exportpath + "bar" + str(barmins)+ str(self.collection) + ".csv", index=True, header=True)
+        return dfbarmin
 
+    def dfcci(self, inputdf, n, export2csv=True):
+        """调用talib方法计算CCI指标，写入到df并输出"""
+        dfcci = inputdf
+        dfcci["cci"] = None
+        for i in range(n, len(inputdf)):
+            df_ne = inputdf.loc[i - n + 1:i, :]
+            cci = talib.CCI(np.array(df_ne["high"]), np.array(df_ne["low"]), np.array(df_ne["close"]), n)
+            dfcci.loc[i, "cci"] = cci[-1]
 
-        return parameter_list
+        dfcci = dfcci.fillna(0)
+        dfcci = dfcci.replace(np.inf, 0)
+        if export2csv == True:
+            dfcci.to_csv(self.exportpath + "dfcci" + str(self.collection) + ".csv", index=True, header=True)
+        return dfcci
 
-    def object_func(self, strategy_avgTuple):
-        """
-        本函数为优化目标函数，根据随机生成的策略参数，运行回测后自动返回2个结果指标：收益回撤比和夏普比率
-        """
-        strategy_avg = strategy_avgTuple
+    #--------------------------------------------------------------
+    def Percentage(self, inputdf, export2csv=True):
+        """调用talib方法计算CCI指标，写入到df并输出"""
+        dfPercentage = inputdf
+        # dfPercentage["Percentage"] = None
+        for i in range(1, len(inputdf)):
+            # if dfPercentage.loc[i,"close"]>dfPercentage.loc[i,"open"]:
+            #     percentage = ((dfPercentage.loc[i,"high"] - dfPercentage.loc[i-1,"close"])/ dfPercentage.loc[i-1,"close"])*100
+            # else:
+            #     percentage = (( dfPercentage.loc[i,"low"] - dfPercentage.loc[i-1,"close"] )/ dfPercentage.loc[i-1,"close"])*100
+            if dfPercentage.loc[ i - 1, "close"] == 0.0:
+                percentage = 0
+            else:
+                percentage = ((dfPercentage.loc[i, "close"] - dfPercentage.loc[i - 1, "close"]) / dfPercentage.loc[ i - 1, "close"]) * 100.0
+            dfPercentage.loc[i, "Perentage"] = percentage
 
+        dfPercentage = dfPercentage.fillna(0)
+        dfPercentage = dfPercentage.replace(np.inf, 0)
+        if export2csv == True:
+            dfPercentage.to_csv(self.exportpath + "Percentage_" + str(self.collection) + ".csv", index=True, header=True)
+        return dfPercentage
 
-        # 创建回测引擎对象
-        engine = BacktestingEngine()
-        # 设置回测使用的数据
-        engine.setBacktestingMode(engine.BAR_MODE)  # 设置引擎的回测模式为K线
-        engine.setDatabase("VnTrader_1Min_Db", self.symbol["vtSymbol"])  # 设置使用的历史数据库
-        engine.setStartDate(self.symbol["StartDate"])  # 设置回测用的数据起始日期
-        engine.setEndDate(self.symbol["EndDate"])  # 设置回测用的数据起始日期
-
-        # 配置回测引擎参数
-        engine.setSlippage(self.symbol["Slippage"])  # 1跳
-        engine.setRate(self.symbol["Rate"])  # 佣金大小
-        engine.setSize(self.symbol["Size"])  # 合约大小
-        engine.setPriceTick(self.symbol["Slippage"])  # 最小价格变动
-        engine.setCapital(self.symbol["Capital"])
-
-        setting = {}
-        i = 0
-        for key, value in self.parameterlist.items():
-            setting[key] = strategy_avg[i]
-            i = i + 1
-
-        engine.clearBacktestingResult()
-        # 加载策略
-        engine.clearBacktestingResult()
-        engine.initStrategy(self.strategy, setting)
-        # 运行回测，返回指定的结果指标
-        engine.runBacktesting()  # 运行回测
-        # 逐日回测
-        # engine.calculateDailyResult()
-        backresult = engine.calculateBacktestingResult()
-        try:
-            capital = round(backresult['capital'], 3)  # 收益回撤比
-            profitLossRatio = round(backresult['profitLossRatio'], 3)  # 夏普比率                 #夏普比率
-            sharpeRatio = round(backresult['sharpeRatio'], 3)
-        except:
-            print("Error: ")
-            sharpeRatio = 0
-            profitLossRatio = 0  # 收益回撤比
-            averageWinning = 0  # 夏普比率                 #夏普比率
-            capital = 0
-        return capital, sharpeRatio, profitLossRatio
-
-    def mutArrayGroup(self, individual, parameterlist, indpb):
-        size = len(individual)
-        paralist = parameterlist()
-        for i in xrange(size):
-            if random.random() < indpb:
-                individual[i] = paralist[i]
-
-        return individual,
-
-    creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0, 1.0))  # 1.0 求最大值；-1.0 求最小值
-    creator.create("Individual", list, fitness=creator.FitnessMulti)
-
-    def optimize(self):
-        # 设置优化方向：最大化收益回撤比，最大化夏普比率
-        toolbox = base.Toolbox()  # Toolbox是deap库内置的工具箱，里面包含遗传算法中所用到的各种函数
-        # pool = Pool(processes=(multiprocessing.cpu_count() - 1))
-        # toolbox.register("map", pool.map)
-
-        # 初始化
-        toolbox.register("individual", tools.initIterate, creator.Individual,
-                         self.parameter_generate)  # 注册个体：随机生成的策略参数parameter_generate()
-        toolbox.register("population", tools.initRepeat, list,
-                         toolbox.individual)  # 注册种群：个体形成种群
-        toolbox.register("mate", tools.cxTwoPoint)  # 注册交叉：两点交叉
-        toolbox.register("mutate", self.mutArrayGroup, parameterlist=self.parameter_generate,
-                         indpb=0.4)  # 注册变异：随机生成一定区间内的整数
-        toolbox.register("evaluate", self.object_func)  # 注册评估：优化目标函数object_func()
-        toolbox.register("select", tools.selNSGA2)  # 注册选择:NSGA-II(带精英策略的非支配排序的遗传算法)
-
-        # 遗传算法参数设置
-        MU = 700  # 设置每一代选择的个体数
-        LAMBDA = 700  # 设置每一代产生的子女数
-        pop = toolbox.population(1600)  # 设置族群里面的个体数量
-        CXPB, MUTPB, NGEN = 0.5, 0.3, 120 # 分别为种群内部个体的交叉概率、变异概率、产生种群代数
-        hof = tools.ParetoFront()  # 解的集合：帕累托前沿(非占优最优集)
-
-        # 解的集合的描述统计信息
-        # 集合内平均值，标准差，最小值，最大值可以体现集合的收敛程度
-        # 收敛程度低可以增加算法的迭代次数
-        stats = tools.Statistics(lambda ind: ind.fitness.values)
-        np.set_printoptions(suppress=True)  # 对numpy默认输出的科学计数法转换
-        stats.register("mean", np.mean, axis=0)  # 统计目标优化函数结果的平均值
-        stats.register("std", np.std, axis=0)  # 统计目标优化函数结果的标准差
-        stats.register("min", np.min, axis=0)  # 统计目标优化函数结果的最小值
-        stats.register("max", np.max, axis=0)  # 统计目标优化函数结果的最大值
-        # 运行算法
-        algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
-                                  halloffame=hof, verbose=True)  # esMuPlusLambda是一种基于(μ+λ)选择策略的多目标优化分段遗传算法
-
-        return pop
-
-    def poptoExcel(self, pop, number = 1000, path = "C:/data/"):
-        #按照输入统计数据队列和路径，输出excel，这里不提供新增模式，如果想，可以改
-        #dft.to_csv(path,index=False,header=True, mode = 'a')
-        path = path +  BBIBoll2VStrategy.className + "_" + self.symbol[ "vtSymbol"] + str(datetime.date.today())+ ".xls"
-        summayKey = ["StrategyParameter","TestValues"]
-        best_ind = tools.selBest(pop, number)
+    def resultValuate(self,inputdf, nextBar, export2csv=True):
+        summayKey = ["Percentage","TestValues"]
         dft = pd.DataFrame(columns=summayKey)
 
-        for i in range(0,len(best_ind)-1):
-            if i == 0:
-                # new = pd.DataFrame([{"StrategyParameter":self.complieString(best_ind[i])},{"TestValues":best_ind[i].fitness.values}], index=["0"])
-                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
-            elif str(best_ind[i-1]) == (str(best_ind[i])):
-                pass
-            else:
-                #new = pd.DataFrame({"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}, index=["0"])
-                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
-
-        dft.to_excel(path,index=False,header=True)
-        print("回测统计结果输出到" + path)
 
 
-    def poptoExcel(self, pop, number = 1000, path = "C:/Users/shui0/OneDrive/Documents/Optimization/"):
-        #按照输入统计数据队列和路径，输出excel，这里不提供新增模式，如果想，可以改
-        #dft.to_csv(path,index=False,header=True, mode = 'a')
-        path = path +  BBIBoll2VStrategy.className + "_" + self.symbol[ "vtSymbol"] + str(datetime.date.today())+ ".xls"
-        summayKey = ["StrategyParameter","TestValues"]
-        best_ind = tools.selBest(pop, number)
-        dft = pd.DataFrame(columns=summayKey)
+    def dfMACD(self, inputdf, n, export2csv=False):
+        """调用talib方法计算MACD指标，写入到df并输出"""
+        dfMACD = inputdf
+        for i in range(n, len(inputdf)):
+            df_ne = inputdf.loc[i - n + 1:i, :]
+            macd,signal,hist = talib.MACD(np.array(df_ne["close"]),12,26,9)
 
-        for i in range(0,len(best_ind)-1):
-            if i == 0:
-                 dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
-            elif str(best_ind[i-1]) == (str(best_ind[i])):
-                pass
-            else:
-                dft = dft.append([{"StrategyParameter":self.complieString(best_ind[i]),"TestValues":best_ind[i].fitness.values}], ignore_index=True)
+            dfMACD.loc[i, "macd"] = macd[-1]
+            dfMACD.loc[i, "signal"] = signal[-1]
+            dfMACD.loc[i, "hist"] = hist[-1]
+            if dfMACD.loc[i,"hist"] > 0 and dfMACD.loc[i-1,"hist"] <= 0:
+                dfMACD.loc[i,"histIndictor"] = 1
+            elif dfMACD.loc[i, "hist"] < 0 and dfMACD.loc[i - 1, "hist"] >= 0:
+                dfMACD.loc[i, "histIndictor"] = -1
 
-        dft.to_excel(path,index=False,header=True)
-        print("回测统计结果输出到" + path)
-
-    def complieString(self,individual):
-        strReturn = "{ "
-        i = 0
-        for key, value in self.parameterlist.items():
-            strReturn = strReturn + key + ": "+ str(individual[i]) + ", "
-            i = i+1
-        strReturn = strReturn + " }"
-        return strReturn
+        dfMACD = dfMACD.fillna(0)
+        dfMACD = dfMACD.replace(np.inf, 0)
+        if export2csv == True:
+            dfMACD.to_csv(self.exportpath + "macd" + str(self.collection) + ".csv", index=True, header=True)
+        return dfMACD
 
 
-if __name__ == "__main__":
-    Strategy = HCLBOLLStrategy
 
-    SymbolList =[
-                    {
-                        "vtSymbol": 'rb1901',
-                        "StartDate": "20180601",
-                        "EndDate": "20181101",
-                        "Slippage": 1,
-                        "Size": 10,
-                        "Rate": 2 / 10000,
-                        "Capital": 10000
-                    },
-                    {
-                        "vtSymbol": 'SR901',
-                        "StartDate": "20180601",
-                        "EndDate": "20181101",
-                        "Slippage": 1,
-                        "Size": 10,
-                        "Rate": 2 / 10000,
-                        "Capital": 15000
-                    },
-                    {
-                        "vtSymbol": 'bu1812',
-                        "StartDate": "20180601",
-                        "EndDate": "20181101",
-                        "Slippage": 2,
-                        "Size": 10,
-                        "Rate": 2 / 10000,
-                        "Capital": 15000
-                    },
-                    {
-                    "vtSymbol": 'm1901',
-                    "StartDate": "20180601",
-                    "EndDate": "20181101",
-                    "Slippage": 1,
-                    "Size": 10,
-                    "Rate": 2 / 10000,
-                    "Capital": 10000
-                    }]
-    Parameterlist = {
-                    'atrWindow': (10,30,1),  # ATR窗口数
-                    'barMins': [2,3,5,10,15,20,25],
-                    'shortBarMins': [2,3,5,10,15,20,25],
-                    'slMultiplier': (3.0,6.0),  # 计算止损距离的乘数
-                    'profitRate': (0.0002,0.0010),
-                    'CloseWindow': (10,50,2),
-                    'ShortWindow': (10,50,2),
-                    'bollWindow': (10,50,2),
-                    'bollDev': (5,10),
-                    'endsize': (0,5,1),
-                    'endplus': (0,5,1),
-                    'barsize': (0,5,1),
-                    'barplus': (0,5,1)
-                    }
-    for Symbol in SymbolList:
-        GE = GeneticOptimizeStrategy(Strategy,Symbol,Parameterlist)
-        pop = GE.optimize()
-        GE.poptoExcel(pop)
-        del GE, pop
-        print("-- End of (successful) %s evolution --",Symbol["vtSymbol"] )
+
+    def addResultBar(self, inputdf, startBar = 2, endBar = 12, step = 2, export2csv = False):
+        dfaddResultBar = inputdf
+        ######cci在（100 - 200),(200 -300）后的第2根，第4根，第6根的价格走势######################
+
+        for i in range(1, len(dfaddResultBar) - endBar - step ):
+            for nextbar in range(startBar,endBar, step):
+                dfaddResultBar.loc[i, "next" + str(nextbar) + "BarDiffer"] = dfaddResultBar.loc[i + nextbar, "close"] - dfaddResultBar.loc[i, "close"]
+                if dfaddResultBar.loc[i, "close"] > dfaddResultBar.loc[i + nextbar, "close"]:
+                    dfaddResultBar.loc[i, "next" + str(nextbar) + "BarClose"] = -1
+                elif dfaddResultBar.loc[i, "close"] < dfaddResultBar.loc[i + nextbar, "close"]:
+                    dfaddResultBar.loc[i, "next" + str(nextbar) + "BarClose"] = 1
+
+        #     #######计算######################
+        #         dfaddResultBar.loc[i,"next5BarCloseMakrup"] = dfaddResultBar.loc[i+5,"close"] - dfaddResultBar.loc[i,"close"]
+        dfaddResultBar = dfaddResultBar.fillna(0)
+        dfaddResultBar = dfaddResultBar.replace(np.inf, 0)
+        if export2csv == True:
+            dfaddResultBar.to_csv(self.exportpath + "addResultBar" + str(self.collection) + ".csv", index=True, header=True)
+        return dfaddResultBar
+
+    def resultOutput(self,de_anaylsisH, startBar=2, endBar=12, step=2, export2csv=False):
+        HCount = len(de_anaylsisH)
+        # LCount = de_anaylsisL['ShortPoint'].count()
+        print ("CheckPoint : %s" % (HCount))
+        dfResult = pd.DataFrame()
+
+        for bar in range(startBar, endBar, step):
+            Upcount = len(de_anaylsisH[de_anaylsisH["next" + str(bar) + "BarClose"] > 0])
+            Upprecent = Upcount * 100.000 / HCount
+            Downcount = len(de_anaylsisH[de_anaylsisH["next" + str(bar) + "BarClose"] < 0])
+            Downprecent = Downcount * 100.000 / HCount
+            closemean = np.mean(de_anaylsisH["next" + str(bar) + "BarDiffer"])
+            closesum = np.sum(de_anaylsisH["next" + str(bar) + "BarDiffer"])
+            closestd = np.std(de_anaylsisH["next" + str(bar) + "BarDiffer"])
+            closemax = np.max(de_anaylsisH["next" + str(bar) + "BarDiffer"])
+            closemin = np.min(de_anaylsisH["next" + str(bar) + "BarDiffer"])
+            print("k线数量为 %s， ，第%s根K线结束, 上涨k线为%s 价格上涨概率为 %s%%;" % (HCount, bar, Upcount, Upprecent))
+            print("k线数量为 %s， ，第%s根K线结束, 下跌k线为%s 价格下跌概率为 %s%%;" % (HCount, bar, Downcount, Downprecent))
+            print('和值 %s, 均值 %s, std %s, max: %s, min: %s' % (closesum, closemean, closestd, closemax, closemin))
+            dfResult = dfResult.append([{"Bar Count": bar,"TotalCount":HCount, "Upcount": Upcount, "Upprecent": Upprecent,
+                                         "Downcount": Downcount, "Downprecent": Downprecent, "closesum": closesum,
+                                         "closemean": closemean, "closestd": closestd, "closemax": closemax,
+                                         "closemin": closemin
+                                         }])
+
+        dfResult = dfResult.fillna(0)
+        dfResult = dfResult.replace(np.inf, 0)
+        if export2csv == True:
+            dfResult.to_csv(self.exportpath + "addResultBar" + str(self.collection) + ".csv", index=True, header=True)
+        return dfResult
+
+    def macdAnalysis(self, inputdf,export2csv =True):
+        dfMACD = inputdf
+        dfAnalysis = pd.DataFrame()
+        #######################################分析cci分布########################################
+
+        for hist in range(10, 25, 5):
+            lpHigh = np.percentile(dfMACD['macd'], 100 - hist)
+            lpLow = np.percentile(dfMACD['macd'], hist)
+            
+            df = pd.DataFrame()
+            de_anaylsisH = dfMACD.loc[(dfMACD["macd"] >= lpHigh)]
+            de_anaylsisH = de_anaylsisH.loc[(de_anaylsisH["histIndictor"] == 1)]
+            df = self.resultOutput(de_anaylsisH, 2, 12, 2)
+            df["hist"] = lpHigh
+            df["histIndictor"] = 1
+            dfAnalysis = dfAnalysis.append(df)
+
+            df = pd.DataFrame()
+            de_anaylsisL = dfMACD.loc[(dfMACD["macd"] <= lpLow)]
+            de_anaylsisL = de_anaylsisL.loc[(de_anaylsisL["histIndictor"] == -1)]
+            df = self.resultOutput(de_anaylsisL, 2, 12, 2)
+            df["hist"] = lpHigh
+            df["histIndictor"] = -1
+            dfAnalysis = dfAnalysis.append(df)
+
+        dfAnalysis = dfAnalysis.fillna(0)
+        dfAnalysis = dfAnalysis.replace(np.inf, 0)
+        if export2csv == True:
+            dfAnalysis.to_csv(self.exportpath + "_Anaylsis" + str(self.collection) + ".csv", index=False, header=True)
+        return dfAnalysis
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    DA = DataAnalyzer()
+    #数据库导入
+    start = datetime.strptime("20180801", '%Y%m%d')
+    end = datetime.strptime("20190501", '%Y%m%d')
+    df = DA.db2df(db="VnTrader_1Min_Db", collection="CF905", start = start, end = end)
+    #csv导入
+    # df = DA.csv2df("rb1905.csv")
+    df5min = DA.df2Barmin(df, 10)
+
+    # print ("Dev is %s-------------------" %dev)
+    df5minAdd = DA.addResultBar(df5min, export2csv=True)
+    dfMACD = DA.dfMACD(df5minAdd,35, dev,export2csv = True)
+    DA.macdAnalysis(dfMACD,export2csv=True,version =dev)
+
+
