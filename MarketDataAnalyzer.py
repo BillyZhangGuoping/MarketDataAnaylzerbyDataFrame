@@ -154,37 +154,6 @@ class DataAnalyzer(object):
             dfMACD.to_csv(self.exportpath + "macd" + str(self.collection) + ".csv", index=True, header=True)
         return dfMACD
 
-    def dfBil(self, inputdf, n, dev, export2csv=False):
-        """调用talib方法计算MACD指标，写入到df并输出"""
-        # mid = (self.sma(C, True) + self.sma(C * 2, True) + self.sma(C * 4, True) + self.sma(C * 8, True)) / 4
-        # std = talib.STDDEV(mid, n)
-        # up = mid + std * dev
-        # down = mid - std * dev
-        # if array:
-        #     return mid, up, down
-        # return mid[-1], up[-1], down[-1]
-        dfBil = inputdf
-        for i in range(100, len(inputdf)):
-            df_ne = inputdf.loc[i - 100 + 1:i, :]
-            mid = (talib.SMA(np.array(df_ne["close"]), 3) + talib.SMA(np.array(df_ne["close"]), 6) + talib.SMA(
-                np.array(df_ne["close"]), 12)
-                   + talib.SMA(np.array(df_ne["close"]), 24)) / 4.0
-            std = talib.STDDEV(mid, n)
-            up = mid[-1] + std[-1] * dev
-            down = mid[-1] - std[-1] * dev
-            dfBil.loc[i, "mid"] = mid[-1]
-            dfBil.loc[i, "up"] = up
-            dfBil.loc[i, "down"] = down
-            if dfBil.loc[i, "up"] != np.inf and dfBil.loc[i, "high"] > dfBil.loc[i, "up"]:
-                dfBil.loc[i, "BuyPoint"] = dfBil.loc[i, "high"] - dfBil.loc[i, "up"]
-            elif dfBil.loc[i, "down"] != np.inf and dfBil.loc[i, "low"] < dfBil.loc[i, "down"]:
-                dfBil.loc[i, "ShortPoint"] = dfBil.loc[i, "low"] - dfBil.loc[i, "down"]
-
-        dfBil = dfBil.fillna(0)
-        dfBil = dfBil.replace(np.inf, 0)
-        if export2csv == True:
-            dfBil.to_csv(self.exportpath + "BILLBOLL" + str(self.collection) + ".csv", index=True, header=True)
-        return dfBil
 
     def dfBOLL(self, inputdf, n, dev, export2csv=False):
         """调用talib方法计算MACD指标，写入到df并输出"""
@@ -311,10 +280,10 @@ if __name__ == '__main__':
     # df = DA.csv2df("rb1905.csv")
     df5min = DA.df2Barmin(df, 10)
 
-    
+
     # print ("Dev is %s-------------------" %dev)
     df5minAdd = DA.addResultBar(df5min, export2csv=True)
-    dfMACD = DA.dfMACD(df5minAdd, 35, dev, export2csv=True)
+    dfMACD = DA.dfMACD(df5minAdd, 100, export2csv=True)
     DA.macdAnalysis(dfMACD, export2csv=True)
 
 
