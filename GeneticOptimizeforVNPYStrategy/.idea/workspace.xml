@@ -13,11 +13,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2208">
-              <caret line="70" lean-forward="true" selection-start-line="70" selection-end-line="70" />
-              <folding>
-                <element signature="e#40#71#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-170">
+              <caret line="68" selection-start-line="68" selection-end-line="68" />
             </state>
           </provider>
         </entry>
@@ -25,7 +22,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/init.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="235">
+            <state relative-caret-position="408">
               <caret line="24" column="36" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="36" />
             </state>
           </provider>
@@ -34,7 +31,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/creator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="533">
+            <state relative-caret-position="2040">
               <caret line="122" column="29" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="29" />
             </state>
           </provider>
@@ -43,7 +40,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-442534463/__builtin__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="82">
+            <state relative-caret-position="57052">
               <caret line="3356" column="6" selection-start-line="3356" selection-start-column="6" selection-end-line="3356" selection-end-column="6" />
             </state>
           </provider>
@@ -52,8 +49,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBollChannel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="230" lean-forward="true" selection-start-line="230" selection-end-line="230" />
+            <state relative-caret-position="3808">
+              <caret line="230" selection-start-line="230" selection-end-line="230" />
             </state>
           </provider>
         </entry>
@@ -70,8 +67,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="198" column="40" selection-start-line="198" selection-start-column="39" selection-end-line="198" selection-end-column="40" />
+            <state relative-caret-position="3451">
+              <caret line="206" column="40" selection-start-line="206" selection-start-column="40" selection-end-line="206" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -79,8 +76,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2110">
-              <caret line="345" column="83" lean-forward="true" selection-start-line="345" selection-start-column="83" selection-end-line="345" selection-end-column="83" />
+            <state relative-caret-position="5338">
+              <caret line="326" column="83" selection-start-line="326" selection-start-column="83" selection-end-line="326" selection-end-column="83" />
             </state>
           </provider>
         </entry>
@@ -121,7 +118,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="923" />
     <option name="y" value="82" />
     <option name="width" value="1612" />
@@ -310,8 +307,8 @@
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49658936" visible="true" weight="0.24973656" />
-      <window_info id="Structure" order="1" sideWeight="0.50341064" side_tool="true" visible="true" weight="0.24973656" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49568552" visible="true" weight="0.24973656" />
+      <window_info id="Structure" order="1" sideWeight="0.5043145" side_tool="true" visible="true" weight="0.24973656" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -434,34 +431,6 @@
     <entry file="file://$PROJECT_DIR$/GeneticOptimizev2.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/checkMutiple.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="198" column="40" selection-start-line="198" selection-start-column="39" selection-end-line="198" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2110">
-          <caret line="345" column="83" lean-forward="true" selection-start-line="345" selection-start-column="83" selection-end-line="345" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-442534463/__builtin__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="82">
-          <caret line="3356" column="6" selection-start-line="3356" selection-start-column="6" selection-end-line="3356" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/multiprocessing/process.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="184">
@@ -476,20 +445,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/creator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="533">
-          <caret line="122" column="29" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/init.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="235">
-          <caret line="24" column="36" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/algorithms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="227">
@@ -500,20 +455,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBollChannel.py">
+    <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="230" lean-forward="true" selection-start-line="230" selection-end-line="230" />
+        <state relative-caret-position="-170">
+          <caret line="68" selection-start-line="68" selection-end-line="68" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GeneticOptimize.py">
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/tools/init.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2208">
-          <caret line="70" lean-forward="true" selection-start-line="70" selection-end-line="70" />
-          <folding>
-            <element signature="e#40#71#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="408">
+          <caret line="24" column="36" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/deap/creator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2040">
+          <caret line="122" column="29" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-442534463/__builtin__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57052">
+          <caret line="3356" column="6" selection-start-line="3356" selection-start-column="6" selection-end-line="3356" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBollChannel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3808">
+          <caret line="230" selection-start-line="230" selection-end-line="230" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkMutiple.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/vtUtility.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3451">
+          <caret line="206" column="40" selection-start-line="206" selection-start-column="40" selection-end-line="206" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda2/Lib/site-packages/vnpy-1.9.2-py2.7.egg/vnpy/trader/app/ctaStrategy/strategy/strategyBBIBoll2V.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5338">
+          <caret line="326" column="83" selection-start-line="326" selection-start-column="83" selection-end-line="326" selection-end-column="83" />
         </state>
       </provider>
     </entry>
