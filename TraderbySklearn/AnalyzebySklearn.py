@@ -260,7 +260,7 @@ if __name__ == '__main__':
     #划分测试验证。
     df_test = df5minAdd.loc[60:,:]        #只从第60个开始分析，因为之前很多是空值
     y= np.array(df_test["tradeindictor"]) #只保留结果趋势结果，转化为数组
-    X = df_test.drop(["close","datetime","high","low","open","volume"],axis = 1).values #不是直接分析HLOC，只保留特征值，转化为数组
+    X = df_test.drop(["tradeindictor","close","datetime","high","low","open","volume"],axis = 1).values #不是直接分析HLOC，只保留特征值，转化为数组
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=0) #三七
     print("训练集长度: %s, 测试集长度: %s" %(len(X_train),len(X_test)))
     from sklearn.feature_selection import SelectKBest
